@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "samples\SampleApp\SampleApp.csproj", "{850B9779-36A7-44BC-A408-6822D8E3B630}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{8C594709-323A-43E9-83A0-C7BFDE21D371}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{94ADF695-2CC5-4029-B465-39BC37BB0679}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5039E3DE-7810-4CB5-AB28-95C383BBA73C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicTreeDataGrid", "src\DynamicTreeDataGrid\DynamicTreeDataGrid.csproj", "{0B6C7DA3-DCB3-4E30-8123-0188CF7063DE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{850B9779-36A7-44BC-A408-6822D8E3B630}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{850B9779-36A7-44BC-A408-6822D8E3B630}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{850B9779-36A7-44BC-A408-6822D8E3B630}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{850B9779-36A7-44BC-A408-6822D8E3B630}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B6C7DA3-DCB3-4E30-8123-0188CF7063DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B6C7DA3-DCB3-4E30-8123-0188CF7063DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B6C7DA3-DCB3-4E30-8123-0188CF7063DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B6C7DA3-DCB3-4E30-8123-0188CF7063DE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{850B9779-36A7-44BC-A408-6822D8E3B630} = {8C594709-323A-43E9-83A0-C7BFDE21D371}
+		{0B6C7DA3-DCB3-4E30-8123-0188CF7063DE} = {5039E3DE-7810-4CB5-AB28-95C383BBA73C}
+	EndGlobalSection
+EndGlobal

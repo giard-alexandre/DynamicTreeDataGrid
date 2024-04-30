@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Avalonia.Controls.TreeDataGrid" Version="11.0.2" />
-      <PackageReference Include="DynamicData" Version="8.4.1" />
+      <PackageReference Include="Avalonia.Controls.TreeDataGrid" />
+      <PackageReference Include="DynamicData" />
     </ItemGroup>
 
 </Project>

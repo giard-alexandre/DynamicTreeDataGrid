@@ -4,7 +4,7 @@ using Avalonia.Controls;
 
 using DynamicData;
 
-namespace DynamicTreeDataGrid;
+namespace DynamicExtensions.TreeDataGrid;
 
 public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : FlatTreeDataGridSource<TModel>
 	where TModel : class where TModelKey : notnull {

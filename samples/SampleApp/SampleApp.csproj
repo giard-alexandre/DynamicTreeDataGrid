@@ -27,6 +27,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\DynamicTreeDataGrid\DynamicTreeDataGrid.csproj" />
+      <ProjectReference Include="..\..\src\DynamicExtensions.TreeDataGrid\DynamicExtensions.TreeDataGrid.csproj" />
     </ItemGroup>
 </Project>

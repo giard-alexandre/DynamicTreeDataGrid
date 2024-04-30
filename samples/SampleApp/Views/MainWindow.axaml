@@ -3,7 +3,7 @@
         xmlns:vm="using:AvaloniaApplication2.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:dynamicTreeDataGrid="clr-namespace:DynamicTreeDataGrid;assembly=DynamicTreeDataGrid"
+        xmlns:dynamicTreeDataGrid="clr-namespace:DynamicExtensions.TreeDataGrid;assembly=DynamicExtensions.TreeDataGrid"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaApplication2.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -17,6 +17,6 @@
 	</Design.DataContext>
 
 	<DockPanel>
-		<dynamicTreeDataGrid:DynamicTreeDataGrid Source="{Binding DataSource}" />
+		<!-- <dynamicTreeDataGrid:DynamicTreeDataGrid Source="{Binding DataSource}" /> -->
 	</DockPanel>
 </Window>

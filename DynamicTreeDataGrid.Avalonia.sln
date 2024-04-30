@@ -8,7 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{94ADF695
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5039E3DE-7810-4CB5-AB28-95C383BBA73C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicTreeDataGrid", "src\DynamicTreeDataGrid\DynamicTreeDataGrid.csproj", "{0B6C7DA3-DCB3-4E30-8123-0188CF7063DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicExtensions.TreeDataGrid", "src\DynamicExtensions.TreeDataGrid\DynamicExtensions.TreeDataGrid.csproj", "{0B6C7DA3-DCB3-4E30-8123-0188CF7063DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

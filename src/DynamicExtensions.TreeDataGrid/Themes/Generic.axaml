@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         d:DesignWidth="800" d:DesignHeight="450"
-        xmlns:dtdg="using:DynamicTreeDataGrid">
+        xmlns:dtdg="using:DynamicExtensions.TreeDataGrid">
 	<Design.PreviewWith>
 		<Border Padding="20">
 			<StackPanel>

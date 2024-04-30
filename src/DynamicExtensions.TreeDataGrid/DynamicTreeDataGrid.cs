@@ -1,10 +1,10 @@
 using Avalonia.Controls;
 
-namespace DynamicTreeDataGrid;
+namespace DynamicExtensions.TreeDataGrid;
 
-public class DynamicTreeDataGrid : TreeDataGrid {
+public class DynamicTreeDataGrid : Avalonia.Controls.TreeDataGrid {
 
-	protected override Type StyleKeyOverride => typeof(TreeDataGrid);
+	protected override Type StyleKeyOverride => typeof(Avalonia.Controls.TreeDataGrid);
 
 	public DynamicTreeDataGrid() : base() {
 	}

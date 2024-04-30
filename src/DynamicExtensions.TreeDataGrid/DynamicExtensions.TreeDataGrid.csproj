@@ -11,4 +11,8 @@
       <PackageReference Include="DynamicData" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageVersion Update="DynamicData" Version="8.4.1" />
+    </ItemGroup>
+
 </Project>

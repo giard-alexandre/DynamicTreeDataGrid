@@ -6,21 +6,25 @@ using Avalonia.Controls.Models.TreeDataGrid;
 
 using Bogus;
 
+using DynamicData.Binding;
+
+using DynamicExtensions.TreeDataGrid;
+
 namespace AvaloniaApplication2.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase {
-	public FlatTreeDataGridSource<Person> DataSource { get; set; }
+	public DynamicFlatTreeDataGridSource<Person, int> DataSource { get; set; }
 
 	public MainWindowViewModel() {
 		//Set the randomizer seed if you wish to generate repeatable data sets.
 		Randomizer.Seed = new Random(8675309);
-		ObservableCollection<Person> data = new ObservableCollection<Person>(new Faker<Person>()
+		var data = new ObservableCollection<Person>(new Faker<Person>()
 			.RuleFor(person => person.Id, faker => faker.IndexFaker)
 			.RuleFor(person => person.Name, faker => faker.Name.FullName())
 			.RuleFor(person => person.DateOfBirth, faker => faker.Date.Past(80))
-			.Generate(300));
+			.Generate(300)).ToObservableChangeSet(person => person.Id);
 
-		DataSource = new FlatTreeDataGridSource<Person>(data) {
+		DataSource = new DynamicFlatTreeDataGridSource<Person,int>(data) {
 			Columns = {
 				new TextColumn<Person, int>("ID", person => person.Id),
 				new TextColumn<Person, string>("Name", person => person.Name),

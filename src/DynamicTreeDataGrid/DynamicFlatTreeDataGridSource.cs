@@ -9,7 +9,7 @@ using Avalonia.Input;
 using DynamicData;
 using DynamicData.Aggregation;
 
-namespace DynamicExtensions.TreeDataGrid;
+namespace DynamicTreeDataGrid;
 
 public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : ITreeDataGridSource<TModel>
 	where TModel : class where TModelKey : notnull {
@@ -23,6 +23,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : ITreeDataGridSou
 			.Do(_ => Console.WriteLine("FILTERINGGGGGGGGG"));
 
 		var myOperation = filteredChanges
+			// .Filter()
 
 			// .Filter(trade=>trade.Status == TradeStatus.Live)
 			// .Sort(SortExpressionComparer<TradeProxy>.Descending(t => t.Timestamp))

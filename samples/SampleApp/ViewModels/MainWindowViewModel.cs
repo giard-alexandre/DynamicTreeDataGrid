@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 
-using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
 
 using Bogus;
 
 using DynamicData.Binding;
 
-using DynamicExtensions.TreeDataGrid;
+using DynamicTreeDataGrid;
 
 namespace AvaloniaApplication2.ViewModels;
 

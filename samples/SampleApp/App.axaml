@@ -7,7 +7,7 @@
     <Application.Styles>
         <FluentTheme />
         <!-- <StyleInclude Source="avares://Avalonia.Controls.TreeDataGrid/Themes/Fluent.axaml"/> -->
-        <StyleInclude Source="avares://DynamicExtensions.TreeDataGrid/Themes/Generic.axaml"/>
+        <StyleInclude Source="avares://DynamicTreeDataGrid/Themes/Generic.axaml"/>
 
     </Application.Styles>
 </Application>

@@ -11,9 +11,7 @@
 		</Border>
 	</Design.PreviewWith>
 
-	<!-- TODO: Use the Generic style once it's exposed. -->
-	<!-- <StyleInclude Source="avares://Avalonia.Controls.TreeDataGrid/Themes/Generic.axaml"/> -->
-	<StyleInclude Source="avares://Avalonia.Controls.TreeDataGrid/Themes/Fluent.axaml" />
+	<StyleInclude Source="avares://Avalonia.Controls.TreeDataGrid/Themes/Generic.axaml"/>
 
 	<Style Selector="FlyoutPresenter.NoPadding">
 		<Setter Property="Padding" Value="0" />

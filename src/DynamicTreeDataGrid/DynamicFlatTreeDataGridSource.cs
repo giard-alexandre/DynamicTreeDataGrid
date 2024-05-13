@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
 using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
@@ -14,11 +15,16 @@ namespace DynamicTreeDataGrid;
 public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : ITreeDataGridSource<TModel>
 	where TModel : class where TModelKey : notnull {
 	private readonly FlatTreeDataGridSource<TModel> treeDataGridSourceImplementation;
+	private readonly IObservable<IChangeSet<TModel, TModelKey>> _changeSet;
+	private readonly IObservable<IComparer<TModel>> _comparer;
+	private readonly ISubject<IComparer<TModel>> _comparerSource = new Subject<IComparer<TModel>>();
 
 	public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes) {
-		//TODO: Consider RefCount?
-		var unfilteredCount = changes.Count();
-		var filteredChanges = changes
+		// Use RefCount to avoid duplicate work
+		_changeSet = changes.RefCount();
+		_comparer = _comparerSource;
+		var unfilteredCount = _changeSet.Count();
+		var filteredChanges = _changeSet
 			// .Filter(model => model) // Consider using DynamicData.PLinq for filtering.
 			.Do(_ => Console.WriteLine("FILTERINGGGGGGGGG"));
 
@@ -26,12 +32,14 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : ITreeDataGridSou
 			// .Filter()
 
 			// .Filter(trade=>trade.Status == TradeStatus.Live)
-			// .Sort(SortExpressionComparer<TradeProxy>.Descending(t => t.Timestamp))
+			// .Sort( SortExpressionComparer<TradeProxy>.Descending(t => t.Timestamp))
+			.Sort(_comparer)
 			.Bind(out var list)
 			.DisposeMany()
-			.Subscribe();
+			.Subscribe(set => Console.WriteLine("Changeset changed."));
 
 		treeDataGridSourceImplementation = new FlatTreeDataGridSource<TModel>(list);
+		// TODO: Setup Sorted event for treeDataGridSourceImplementation?
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged {
@@ -49,8 +57,30 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : ITreeDataGridSou
 
 	public IEnumerable<object>? GetModelChildren(object model) => (
 		(ITreeDataGridSource)treeDataGridSourceImplementation).GetModelChildren(model);
-	public bool SortBy(IColumn column, ListSortDirection direction) => ((ITreeDataGridSource)
-		treeDataGridSourceImplementation).SortBy(column, direction);
+
+	public bool SortBy(IColumn? column, ListSortDirection direction)
+	{
+		if (column is IColumn<TModel> typedColumn)
+		{
+			if (!Columns.Contains(typedColumn))
+				return true;
+
+			var comparer = typedColumn.GetComparison(direction);
+
+			if (comparer is not null)
+			{
+				var comparerInstance = comparer is not null ? new FuncComparer<TModel>(comparer) : null;
+				// Trigger a new sort notification.
+				_comparerSource.OnNext(comparerInstance);
+				Sorted?.Invoke();
+				foreach (var c in Columns)
+					c.SortDirection = c == column ? direction : null;
+			}
+			return true;
+		}
+
+		return false;
+	}
 
 	public ColumnList<TModel> Columns => treeDataGridSourceImplementation.Columns;
 	IColumns ITreeDataGridSource.Columns => Columns;
@@ -67,8 +97,5 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : ITreeDataGridSou
 
 	IEnumerable<object> ITreeDataGridSource.Items => ((ITreeDataGridSource)treeDataGridSourceImplementation).Items;
 
-	public event Action? Sorted {
-		add => treeDataGridSourceImplementation.Sorted += value;
-		remove => treeDataGridSourceImplementation.Sorted -= value;
-	}
+	public event Action? Sorted;
 }

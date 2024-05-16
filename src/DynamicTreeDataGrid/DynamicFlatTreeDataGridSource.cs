@@ -19,20 +19,25 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : ITreeDataGridSou
 	private readonly IObservable<IComparer<TModel>> _comparer;
 	private readonly ISubject<IComparer<TModel>> _comparerSource = new Subject<IComparer<TModel>>();
 
+	private readonly ISubject<Func<TModel, bool>> _filterSource = new BehaviorSubject<Func<TModel, bool>>(_ => true);
+	private readonly IObservable<Func<TModel, bool>> _itemsFilter;
+
 	public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes) {
+		_itemsFilter = _filterSource;
 		// Use RefCount to avoid duplicate work
 		_changeSet = changes.RefCount();
 		_comparer = _comparerSource;
-		var unfilteredCount = _changeSet.Count();
+		TotalCount = _changeSet.Count();
 		var filteredChanges = _changeSet
 			// .Filter(model => model) // Consider using DynamicData.PLinq for filtering.
 			.Do(_ => Console.WriteLine("FILTERINGGGGGGGGG"));
 
+		FilteredCount = filteredChanges.Count();
+
 		var myOperation = filteredChanges
-			// .Filter()
+			.Filter(_itemsFilter)
 
 			// .Filter(trade=>trade.Status == TradeStatus.Live)
-			// .Sort( SortExpressionComparer<TradeProxy>.Descending(t => t.Timestamp))
 			.Sort(_comparer)
 			.Bind(out var list)
 			.DisposeMany()
@@ -41,6 +46,10 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : ITreeDataGridSou
 		treeDataGridSourceImplementation = new FlatTreeDataGridSource<TModel>(list);
 		// TODO: Setup Sorted event for treeDataGridSourceImplementation?
 	}
+
+	public IObservable<int> FilteredCount { get; set; }
+
+	public IObservable<int> TotalCount { get; set; }
 
 	public event PropertyChangedEventHandler? PropertyChanged {
 		add => treeDataGridSourceImplementation.PropertyChanged += value;

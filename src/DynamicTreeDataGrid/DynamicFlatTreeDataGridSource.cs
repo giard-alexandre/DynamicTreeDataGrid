@@ -78,7 +78,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : ITreeDataGridSou
 
 			if (comparer is not null)
 			{
-				var comparerInstance = comparer is not null ? new FuncComparer<TModel>(comparer) : null;
+				var comparerInstance = new FuncComparer<TModel>(comparer);
 				// Trigger a new sort notification.
 				_comparerSource.OnNext(comparerInstance);
 				Sorted?.Invoke();

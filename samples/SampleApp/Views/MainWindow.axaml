@@ -16,6 +16,12 @@
 	</Design.DataContext>
 
 	<DockPanel>
-		<TreeDataGrid Source="{Binding DataSource}"></TreeDataGrid>
+		<TreeDataGrid Source="{Binding DataSource}">
+			<TreeDataGrid.Resources>
+				<DataTemplate x:Key="HeightCell" DataType="{x:Type viewModels:Person}">
+					<TextBlock Text="{Binding Height, StringFormat={}{0:0.0}}"/>
+				</DataTemplate>
+			</TreeDataGrid.Resources>
+		</TreeDataGrid>
 	</DockPanel>
 </Window>

@@ -2,10 +2,10 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
-using AvaloniaApplication2.ViewModels;
-using AvaloniaApplication2.Views;
+using SampleApp.ViewModels;
+using SampleApp.Views;
 
-namespace AvaloniaApplication2;
+namespace SampleApp;
 
 public partial class App : Application {
     public override void Initialize() { AvaloniaXamlLoader.Load(this); }

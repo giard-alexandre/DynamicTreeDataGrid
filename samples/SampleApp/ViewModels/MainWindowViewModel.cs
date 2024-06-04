@@ -8,7 +8,7 @@ using DynamicData.Binding;
 using DynamicTreeDataGrid;
 using DynamicTreeDataGrid.Columns;
 
-namespace AvaloniaApplication2.ViewModels;
+namespace SampleApp.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase {
 	public DynamicFlatTreeDataGridSource<Person, int> DataSource { get; set; }

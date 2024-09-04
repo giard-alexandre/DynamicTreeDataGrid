@@ -29,6 +29,9 @@
 
 	<Styles.Resources>
 		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="/Themes/Test.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
 			<!-- Override default TreeDataGrid header column to include our filtering flyout -->
 			<ControlTheme x:Key="{x:Type TreeDataGridColumnHeader}" TargetType="TreeDataGridColumnHeader">
 				<Setter Property="Background" Value="Transparent" />

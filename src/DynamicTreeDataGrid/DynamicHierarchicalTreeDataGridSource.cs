@@ -7,7 +7,8 @@ using Avalonia.Input;
 
 namespace DynamicTreeDataGrid;
 
-public class DynamicHierarchicalTreeDataGridSource<TModel, TModelKey> : ITreeDataGridSource<TModel>
+// TODO: Implement this for real :)
+public class DynamicHierarchicalTreeDataGridSource<TModel> : IDynamicTreeDataGridSource<TModel>
 	where TModel : class {
 	private ITreeDataGridSource<TModel> treeDataGridSourceImplementation;
 	public event PropertyChangedEventHandler? PropertyChanged {

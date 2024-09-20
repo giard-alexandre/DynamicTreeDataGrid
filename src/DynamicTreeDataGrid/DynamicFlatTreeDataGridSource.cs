@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
 using Avalonia.Controls;
@@ -12,7 +11,7 @@ using DynamicData.Aggregation;
 
 namespace DynamicTreeDataGrid;
 
-public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : ITreeDataGridSource<TModel>
+public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : IDynamicTreeDataGridSource<TModel>
     where TModel : class where TModelKey : notnull {
     private readonly FlatTreeDataGridSource<TModel> treeDataGridSourceImplementation;
     private readonly IObservable<IChangeSet<TModel, TModelKey>> _changeSet;

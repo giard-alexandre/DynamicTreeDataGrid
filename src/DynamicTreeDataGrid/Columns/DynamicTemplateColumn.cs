@@ -2,9 +2,11 @@ using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Controls.Templates;
 
+using DynamicTreeDataGrid.Models.Columns;
+
 namespace DynamicTreeDataGrid.Columns;
 
-public class DynamicTemplateColumn<TModel> : TemplateColumn<TModel> {
+public class DynamicTemplateColumn<TModel> : FilterableTemplateColumn<TModel> {
     public DynamicTemplateColumn(object? header,
                                  IDataTemplate cellTemplate,
                                  IDataTemplate? cellEditingTemplate = null,

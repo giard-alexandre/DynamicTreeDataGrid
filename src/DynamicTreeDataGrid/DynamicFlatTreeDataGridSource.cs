@@ -19,7 +19,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : ITreeDataGridSou
     private readonly IObservable<IComparer<TModel>> _sort;
     private readonly ISubject<IComparer<TModel>> _sortSource = new Subject<IComparer<TModel>>();
 
-    private readonly ISubject<Func<TModel, bool>> _filterSource = new BehaviorSubject<Func<TModel, bool>>(_ => true);
+    private readonly ISubject<Func<TModel, bool>> _filterSource = new BehaviorSubject<Func<TModel, bool>>(model => true);
     private readonly IObservable<Func<TModel, bool>> _itemsFilter;
 
     public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes) {

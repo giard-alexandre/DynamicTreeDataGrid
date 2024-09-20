@@ -8,12 +8,14 @@ namespace DynamicTreeDataGrid.Models;
 
 public abstract class FilterableColumnBase<TModel, TValue> : ColumnBase<TModel, TValue>, IFilterableColumn<TModel>
     where TModel : class {
+    /// <inheritdoc />
     protected FilterableColumnBase(object? header,
                                    Expression<Func<TModel, TValue?>> getter,
                                    Action<TModel, TValue?>? setter,
                                    GridLength? width,
                                    ColumnOptions<TModel> options) : base(header, getter, setter, width, options) { }
 
+    /// <inheritdoc />
     protected FilterableColumnBase(object? header,
                                    Func<TModel, TValue?> valueSelector,
                                    TypedBinding<TModel, TValue?> binding,

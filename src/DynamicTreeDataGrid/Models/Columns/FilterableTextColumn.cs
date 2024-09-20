@@ -4,13 +4,15 @@ using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Experimental.Data;
 
-namespace DynamicTreeDataGrid.Models;
+namespace DynamicTreeDataGrid.Models.Columns;
 
+/// <summary>
+/// A column in an <see cref="ITreeDataGridSource"/> which displays its values as text.
+/// </summary>
+/// <typeparam name="TModel">The model type.</typeparam>
+/// <typeparam name="TValue">The column data type.</typeparam>
 public class FilterableTextColumn<TModel, TValue> : FilterableColumnBase<TModel, TValue>, ITextSearchableColumn<TModel>
     where TModel : class {
-    private ITextSearchableColumn<TModel> _textSearchableColumnImplementation;
-
-    // TODO: Look into using <inheritdoc>?
     /// <summary>
     /// Initializes a new instance of the <see cref="TextColumn{TModel, TValue}"/> class.
     /// </summary>
@@ -54,13 +56,9 @@ public class FilterableTextColumn<TModel, TValue> : FilterableColumnBase<TModel,
 
     bool ITextSearchableColumn<TModel>.IsTextSearchEnabled => Options?.IsTextSearchEnabled ?? false;
 
-    public override ICell CreateCell(IRow<TModel> row)
-    {
+    public override ICell CreateCell(IRow<TModel> row) {
         return new TextCell<TValue?>(CreateBindingExpression(row.Model), Binding.Write is null, Options);
     }
 
-    string? ITextSearchableColumn<TModel>.SelectValue(TModel model)
-    {
-        return ValueSelector(model)?.ToString();
-    }
+    public string? SelectValue(TModel model) { return ValueSelector(model)?.ToString(); }
 }

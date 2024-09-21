@@ -16,8 +16,4 @@
       <PackageVersion Update="DynamicData" Version="8.4.1" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Models\" />
-    </ItemGroup>
-
 </Project>

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 
+using Avalonia.Controls.Models.TreeDataGrid;
+
 using Bogus;
 using Bogus.DataSets;
 
 using DynamicData.Binding;
 
 using DynamicTreeDataGrid;
-using DynamicTreeDataGrid.Columns;
 
 namespace SampleApp.ViewModels;
 
@@ -28,13 +29,13 @@ public class MainWindowViewModel : ViewModelBase {
 
 		DataSource = new DynamicFlatTreeDataGridSource<Person,int>(data) {
 			Columns = {
-				new DynamicTextColumn<Person, int>("ID", person => person.Id),
-				new DynamicTextColumn<Person, string>("Name", person => person.Name),
-				new DynamicTextColumn<Person, DateTime>("DoB", person => person.DateOfBirth),
-				new DynamicTemplateColumn<Person>("Height", "HeightCell"),
-				new DynamicTextColumn<Person, double>("Raw Height", person => person.Height),
-				new DynamicTextColumn<Person, Name.Gender>("Gender", person => person.Gender), // To Template
-				new DynamicTextColumn<Person, decimal>("Money", person => person.Money),
+				new TextColumn<Person, int>("ID", person => person.Id),
+				new TextColumn<Person, string>("Name", person => person.Name),
+				new TextColumn<Person, DateTime>("DoB", person => person.DateOfBirth),
+				new TemplateColumn<Person>("Height", "HeightCell"),
+				new TextColumn<Person, double>("Raw Height", person => person.Height),
+				new TextColumn<Person, Name.Gender>("Gender", person => person.Gender), // To Template
+				new TextColumn<Person, decimal>("Money", person => person.Money),
 			},
 		};
 	}

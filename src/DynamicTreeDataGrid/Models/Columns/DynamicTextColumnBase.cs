@@ -2,7 +2,6 @@
 
 using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
-using Avalonia.Experimental.Data;
 
 namespace DynamicTreeDataGrid.Models.Columns;
 
@@ -11,11 +10,16 @@ namespace DynamicTreeDataGrid.Models.Columns;
 /// </summary>
 /// <typeparam name="TModel">The model type.</typeparam>
 /// <typeparam name="TValue">The column data type.</typeparam>
-public class DynamicTextColumnBase<TModel, TValue> : DynamicColumnBase<TModel, TValue> //, ITextSearchableColumn<TModel>
+public abstract class
+	DynamicTextColumnBase<TModel, TValue> : DynamicColumnBase<TModel, TValue> //, ITextSearchableColumn<TModel>
 	where TModel : class {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TextColumn{TModel, TValue}"/> class.
 	/// </summary>
+	/// <param name="name">
+	/// Unique name for the column.
+	/// Must be unique for each column in the <see cref="Avalonia.Controls.ITreeDataGridSource"/>
+	/// </param>
 	/// <param name="header">The column header.</param>
 	/// <param name="getter">
 	/// An expression which given a row model, returns a cell value for the column.
@@ -24,15 +28,20 @@ public class DynamicTextColumnBase<TModel, TValue> : DynamicColumnBase<TModel, T
 	/// The column width. If null defaults to <see cref="GridLength.Auto"/>.
 	/// </param>
 	/// <param name="options">Additional column options.</param>
-	public DynamicTextColumnBase(object? header,
+	protected DynamicTextColumnBase(string name,
+	                             object? header,
 	                             Expression<Func<TModel, TValue?>> getter,
 	                             GridLength? width = null,
-	                             TextColumnOptions<TModel>? options = null) : base(header, getter, null, width,
+	                             TextColumnOptions<TModel>? options = null) : base(name, header, getter, null, width,
 		options ?? new()) { }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TextColumn{TModel, TValue}"/> class.
 	/// </summary>
+	/// <param name="name">
+	/// Unique name for the column.
+	/// Must be unique for each column in the <see cref="Avalonia.Controls.ITreeDataGridSource"/>
+	/// </param>
 	/// <param name="header">The column header.</param>
 	/// <param name="getter">
 	/// An expression which given a row model, returns a cell value for the column.
@@ -45,11 +54,12 @@ public class DynamicTextColumnBase<TModel, TValue> : DynamicColumnBase<TModel, T
 	/// The column width. If null defaults to <see cref="GridLength.Auto"/>.
 	/// </param>
 	/// <param name="options">Additional column options.</param>
-	public DynamicTextColumnBase(object? header,
+	protected DynamicTextColumnBase(string name,
+	                             object? header,
 	                             Expression<Func<TModel, TValue?>> getter,
 	                             Action<TModel, TValue?> setter,
 	                             GridLength? width = null,
-	                             TextColumnOptions<TModel>? options = null) : base(header, getter, setter, width,
+	                             TextColumnOptions<TModel>? options = null) : base(name, header, getter, setter, width,
 		options ?? new()) { }
 
 	public new TextColumnOptions<TModel> Options => (TextColumnOptions<TModel>)base.Options;

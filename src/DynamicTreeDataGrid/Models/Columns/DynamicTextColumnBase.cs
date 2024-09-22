@@ -11,7 +11,7 @@ namespace DynamicTreeDataGrid.Models.Columns;
 /// </summary>
 /// <typeparam name="TModel">The model type.</typeparam>
 /// <typeparam name="TValue">The column data type.</typeparam>
-public class DynamicTextColumnBase<TModel, TValue> : DynamicColumnBase<TModel, TValue>, ITextSearchableColumn<TModel>
+public class DynamicTextColumnBase<TModel, TValue> : DynamicColumnBase<TModel, TValue> //, ITextSearchableColumn<TModel>
 	where TModel : class {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TextColumn{TModel, TValue}"/> class.
@@ -54,11 +54,11 @@ public class DynamicTextColumnBase<TModel, TValue> : DynamicColumnBase<TModel, T
 
 	public new TextColumnOptions<TModel> Options => (TextColumnOptions<TModel>)base.Options;
 
-	bool ITextSearchableColumn<TModel>.IsTextSearchEnabled => Options?.IsTextSearchEnabled ?? false;
+	// bool ITextSearchableColumn<TModel>.IsTextSearchEnabled => Options?.IsTextSearchEnabled ?? false;
+	// public string? SelectValue(TModel model) { return ValueSelector(model)?.ToString(); }
+
 
 	public override ICell CreateCell(IRow<TModel> row) {
 		return new TextCell<TValue?>(CreateBindingExpression(row.Model), Binding.Write is null, Options);
 	}
-
-	public string? SelectValue(TModel model) { return ValueSelector(model)?.ToString(); }
 }

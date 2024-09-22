@@ -9,8 +9,8 @@ public interface IDynamicColumn : IColumn {
 	/// </summary>
 	public string Name { get; set; }
 
-	/// <summary>
-	/// Whether the column should be visible in the table. Defaults to <c>true</c>
-	/// </summary>
-	public bool Visible { get; set; }
+	// /// <summary>
+	// /// Whether the column should be visible in the table. Defaults to <c>true</c>
+	// /// </summary>
+	// public bool Visible { get; set; }
 }

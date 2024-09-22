@@ -26,15 +26,15 @@ public class MainWindowViewModel : ViewModelBase {
 			.RuleFor(person => person.Money, faker => faker.Finance.Amount(-1000M, 1000M, 5))
 			.Generate(300)).ToObservableChangeSet(person => person.Id);
 
-		DataSource = new DynamicFlatTreeDataGridSource<Person,int>(data) {
+		DataSource = new DynamicFlatTreeDataGridSource<Person, int>(data) {
 			Columns = {
-				new DynamicTextColumn<Person, int>("ID", person => person.Id),
-				new DynamicTextColumn<Person, string>("Name", person => person.Name),
-				new DynamicTextColumn<Person, DateTime>("DoB", person => person.DateOfBirth),
-				new DynamicTemplateColumn<Person>("Height", "HeightCell"),
-				new DynamicTextColumn<Person, double>("Raw Height", person => person.Height),
-				new DynamicTextColumn<Person, Name.Gender>("Gender", person => person.Gender), // To Template
-				new DynamicTextColumn<Person, decimal>("Money", person => person.Money),
+				new DynamicTextColumn<Person, int>("Id", "Id", person => person.Id),
+				new DynamicTextColumn<Person, string>("Name", "Name", person => person.Name),
+				new DynamicTextColumn<Person, DateTime>("Date-of-Birth", "DoB", person => person.DateOfBirth),
+				new DynamicTemplateColumn<Person>("Height", "Height", "HeightCell"),
+				new DynamicTextColumn<Person, double>("Height-Raw", "Raw Height", person => person.Height),
+				new DynamicTextColumn<Person, Name.Gender>("Gender", "Gender", person => person.Gender), // To Template
+				new DynamicTextColumn<Person, decimal>("Money", "Money", person => person.Money),
 			},
 		};
 	}

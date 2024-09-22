@@ -12,15 +12,18 @@ namespace DynamicTreeDataGrid.Columns;
 /// </summary>
 /// <typeparam name="TModel">The model type.</typeparam>
 /// <remarks>
-/// Extra abstraction over <seealso cref="Models.Columns.DynamicCheckBoxColumn{TModel}"/> as that class is meant to copy
-/// <seealso cref="CheckBoxColumn{TModel}"/> as closely as possible. This class adds all of this packages
-/// extra features to it!
+/// Basically a <seealso cref="CheckBoxColumn{TModel}"/> but with the required <see cref="Name"/> field ti make this
+/// packages features work.
 /// </remarks>
-public class DynamicCheckBoxColumn<TModel> : DynamicCheckBoxColumnBase<TModel>
+public class DynamicCheckBoxColumn<TModel> : CheckBoxColumn<TModel>, IDynamicColumn<TModel>
 	where TModel : class {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="DynamicCheckBoxColumnBase{TModel}"/> class.
+	/// Initializes a new instance of the <see cref="DynamicCheckBoxColumn{TModel}"/> class.
 	/// </summary>
+	/// <param name="name">
+	/// Unique name for the column.
+	/// Must be unique for each column in the <see cref="Avalonia.Controls.ITreeDataGridSource"/>
+	/// </param>
 	/// <param name="header">The column header.</param>
 	/// <param name="getter">
 	/// An expression which given a row model, returns a boolean cell value for the column.
@@ -33,17 +36,24 @@ public class DynamicCheckBoxColumn<TModel> : DynamicCheckBoxColumnBase<TModel>
 	/// The column width. If null defaults to <see cref="GridLength.Auto"/>.
 	/// </param>
 	/// <param name="options">Additional column options.</param>
-	public DynamicCheckBoxColumn(object? header,
+	public DynamicCheckBoxColumn(string name,
+	                             object? header,
 	                             Expression<Func<TModel, bool>> getter,
 	                             Action<TModel, bool>? setter = null,
 	                             GridLength? width = null,
 	                             CheckBoxColumnOptions<TModel>? options = null) : base(header, getter, setter, width,
-		options) { }
+		options) {
+		Name = name;
+	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="DynamicCheckBoxColumnBase{TModel}"/> class that
+	/// Initializes a new instance of the <see cref="DynamicCheckBoxColumn{TModel}"/> class that
 	/// displays a three-state check box.
 	/// </summary>
+	/// <param name="name">
+	/// Unique name for the column.
+	/// Must be unique for each column in the <see cref="Avalonia.Controls.ITreeDataGridSource"/>
+	/// </param>
 	/// <param name="header">The column header.</param>
 	/// <param name="getter">
 	/// An expression which given a row model, returns a nullable boolean cell value for the
@@ -57,10 +67,15 @@ public class DynamicCheckBoxColumn<TModel> : DynamicCheckBoxColumnBase<TModel>
 	/// The column width. If null defaults to <see cref="GridLength.Auto"/>.
 	/// </param>
 	/// <param name="options">Additional column options.</param>
-	public DynamicCheckBoxColumn(object? header,
+	public DynamicCheckBoxColumn(string name,
+	                             object? header,
 	                             Expression<Func<TModel, bool?>> getter,
 	                             Action<TModel, bool?>? setter = null,
 	                             GridLength? width = null,
 	                             CheckBoxColumnOptions<TModel>? options = null) : base(header, getter, setter, width,
-		options) { }
+		options) {
+		Name = name;
+	}
+
+	public string Name { get; set; }
 }

@@ -21,10 +21,11 @@ public class DynamicTextColumn<TModel, TValue> : DynamicTextColumnBase<TModel, T
 	/// The column width. If null defaults to <see cref="GridLength.Auto"/>.
 	/// </param>
 	/// <param name="options">Additional column options.</param>
-	public DynamicTextColumn(object? header,
+	public DynamicTextColumn(string name,
+	                         object? header,
 	                         Expression<Func<TModel, TValue?>> getter,
 	                         GridLength? width = null,
-	                         TextColumnOptions<TModel>? options = null) : base(header, getter, width, options) { }
+	                         TextColumnOptions<TModel>? options = null) : base(name, header, getter, width, options) { }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TextColumn{TModel, TValue}"/> class.
@@ -41,10 +42,11 @@ public class DynamicTextColumn<TModel, TValue> : DynamicTextColumnBase<TModel, T
 	/// The column width. If null defaults to <see cref="GridLength.Auto"/>.
 	/// </param>
 	/// <param name="options">Additional column options.</param>
-	public DynamicTextColumn(object? header,
+	public DynamicTextColumn(string name,
+	                         object? header,
 	                         Expression<Func<TModel, TValue?>> getter,
 	                         Action<TModel, TValue?> setter,
 	                         GridLength? width = null,
-	                         TextColumnOptions<TModel>? options = null) : base(header, getter, setter, width,
+	                         TextColumnOptions<TModel>? options = null) : base(name, header, getter, setter, width,
 		options ?? new()) { }
 }

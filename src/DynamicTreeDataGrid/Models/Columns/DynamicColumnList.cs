@@ -8,12 +8,37 @@ namespace DynamicTreeDataGrid.Models.Columns;
 
 public class DynamicColumnList<TModel> : NotifyingListBase<IDynamicColumn<TModel>>, IDynamicColumns {
 	private double _viewportWidth;
+	private HashSet<string> _nameSet = [];
 
 	public event EventHandler? LayoutInvalidated;
 
 	public void AddRange(IEnumerable<IDynamicColumn<TModel>> items) {
 		foreach (var item in items)
 			Add(item);
+	}
+
+	public new void Add(IDynamicColumn<TModel> item) {
+		if (!_nameSet.Add(item.Name)) {
+			throw new ArgumentException("Attempted to add column with duplicate Name.");
+		}
+
+		base.Add(item);
+	}
+
+	protected override void InsertItem(int index, IDynamicColumn<TModel> item) {
+		if (!_nameSet.Add(item.Name)) {
+			throw new ArgumentException("Attempted to add column with duplicate Name.");
+		}
+		base.InsertItem(index, item);
+	}
+
+	protected override void SetItem(int index, IDynamicColumn<TModel> item) {
+		if (_nameSet.Contains(item.Name) && this[index].Name != item.Name) {
+			throw new ArgumentException("Attempted to add column with duplicate Name.");
+		}
+
+		_nameSet.Add(item.Name);
+		base.SetItem(index, item);
 	}
 
 	public Size CellMeasured(int columnIndex, int rowIndex, Size size) {

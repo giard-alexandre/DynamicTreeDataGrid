@@ -7,7 +7,7 @@ public interface IDynamicColumn : IColumn {
 	/// Unique name for the column.
 	/// Must be unique for each column in the <see cref="Avalonia.Controls.ITreeDataGridSource"/>
 	/// </summary>
-	public string Name { get; set; }
+	public string Name { get; init; }
 
 	// /// <summary>
 	// /// Whether the column should be visible in the table. Defaults to <c>true</c>

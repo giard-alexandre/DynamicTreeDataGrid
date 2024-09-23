@@ -27,5 +27,5 @@ public class DynamicTemplateColumn<TModel> : TemplateColumn<TModel>, IDynamicCol
 		Name = name;
 	}
 
-	public string Name { get; set; }
+	public string Name { get; init; }
 }

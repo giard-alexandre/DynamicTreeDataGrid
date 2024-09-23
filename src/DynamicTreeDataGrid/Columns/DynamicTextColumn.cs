@@ -62,5 +62,5 @@ public class DynamicTextColumn<TModel, TValue> : TextColumn<TModel, TValue>, IDy
 		Name = name;
 	}
 
-	public string Name { get; set; }
+	public string Name { get; init; }
 }

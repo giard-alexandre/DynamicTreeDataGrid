@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Models;
@@ -7,24 +9,22 @@ using Avalonia.Utilities;
 namespace DynamicTreeDataGrid.Models.Columns;
 
 public class DynamicColumnList<TModel> : NotifyingListBase<IDynamicColumn<TModel>>, IDynamicColumns {
+	private readonly HashSet<string> _nameSet = [];
 	private double _viewportWidth;
-	private HashSet<string> _nameSet = [];
 
 	public event EventHandler? LayoutInvalidated;
 
+	/// <summary>
+	/// Adds the elements of the specified <see cref="IEnumerable{T}"/> to the end of this <see cref="DynamicColumnList{TModel}"/>
+	/// </summary>
+	/// <param name="items">The elements to add to this <see cref="DynamicColumnList{TModel}"/></param>
 	public void AddRange(IEnumerable<IDynamicColumn<TModel>> items) {
 		foreach (var item in items)
 			Add(item);
 	}
 
-	public new void Add(IDynamicColumn<TModel> item) {
-		if (!_nameSet.Add(item.Name)) {
-			throw new ArgumentException("Attempted to add column with duplicate Name.");
-		}
-
-		base.Add(item);
-	}
-
+	/// <inheritdoc cref="Collection{T}.InsertItem"/>
+	/// <remarks>Overrides the implementation, adding unique-name logic</remarks>
 	protected override void InsertItem(int index, IDynamicColumn<TModel> item) {
 		if (!_nameSet.Add(item.Name)) {
 			throw new ArgumentException("Attempted to add column with duplicate Name.");
@@ -32,6 +32,8 @@ public class DynamicColumnList<TModel> : NotifyingListBase<IDynamicColumn<TModel
 		base.InsertItem(index, item);
 	}
 
+	/// <inheritdoc cref="Collection{T}.SetItem"/>
+	/// <remarks>Overrides the implementation, adding unique-name logic</remarks>
 	protected override void SetItem(int index, IDynamicColumn<TModel> item) {
 		if (_nameSet.Contains(item.Name) && this[index].Name != item.Name) {
 			throw new ArgumentException("Attempted to add column with duplicate Name.");

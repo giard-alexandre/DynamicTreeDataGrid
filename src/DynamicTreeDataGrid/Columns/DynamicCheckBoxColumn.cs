@@ -77,5 +77,5 @@ public class DynamicCheckBoxColumn<TModel> : CheckBoxColumn<TModel>, IDynamicCol
 		Name = name;
 	}
 
-	public string Name { get; set; }
+	public string Name { get; init; }
 }

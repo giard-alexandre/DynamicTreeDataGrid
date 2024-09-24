@@ -12,75 +12,70 @@ using DynamicTreeDataGrid.Models.Columns;
 namespace DynamicTreeDataGrid;
 
 public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : FlatTreeDataGridSource<TModel>,
-	IDynamicTreeDataGridSource<TModel>
-	where TModel : class where TModelKey : notnull {
-	private readonly IObservable<IChangeSet<TModel, TModelKey>> _changeSet;
-	private readonly IObservable<IComparer<TModel>> _sort;
-	private readonly ISubject<IComparer<TModel>> _sortSource = new Subject<IComparer<TModel>>();
+    IDynamicTreeDataGridSource<TModel>
+    where TModel : class where TModelKey : notnull {
+    // By default, the filtering function just includes all rows.
+    private readonly ISubject<Func<TModel, bool>> _filterSource = new BehaviorSubject<Func<TModel, bool>>(_ => true);
+    private readonly IObservable<IChangeSet<TModel, TModelKey>> _changeSet;
+    private readonly IObservable<IComparer<TModel>> _sort;
+    private readonly ISubject<IComparer<TModel>> _sortSource = new Subject<IComparer<TModel>>();
+    private readonly IObservable<Func<TModel, bool>> _itemsFilter;
 
-	private readonly ISubject<Func<TModel, bool>>
-		_filterSource = new BehaviorSubject<Func<TModel, bool>>(model => true);
+    public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes) : base([]) {
+        _itemsFilter = _filterSource;
 
-	private readonly IObservable<Func<TModel, bool>> _itemsFilter;
+        // Use RefCount to avoid duplicate work
+        _changeSet = changes.RefCount();
+        _sort = _sortSource;
+        TotalCount = _changeSet.Count();
 
-	public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes) : base([]) {
-		_itemsFilter = _filterSource;
+        var filteredChanges = _changeSet.Filter(_itemsFilter);
+        FilteredCount = filteredChanges.Count();
 
-		// Use RefCount to avoid duplicate work
-		_changeSet = changes.RefCount();
-		_sort = _sortSource;
-		TotalCount = _changeSet.Count();
+        var myOperation = filteredChanges.Sort(_sort)
+            .Bind(out var list)
+            .DisposeMany()
+            .Subscribe(set => Console.WriteLine("Changeset changed."));
 
-		var filteredChanges = _changeSet.Filter(_itemsFilter);
-		FilteredCount = filteredChanges.Count();
+        Items = list;
+        Columns = [];
 
-		var myOperation = filteredChanges.Sort(_sort)
-			.Bind(out var list)
-			.DisposeMany()
-			.Subscribe(set => Console.WriteLine("Changeset changed."));
+        // TODO: Setup Sorted event for treeDataGridSourceImplementation?
+    }
 
-		Items = list;
-		Columns = [];
+    public IObservable<int> FilteredCount { get; }
+    public IObservable<int> TotalCount { get; }
 
-		// TODO: Setup Sorted event for treeDataGridSourceImplementation?
-	}
+    public new DynamicColumnList<TModel> Columns { get; }
+    IColumns ITreeDataGridSource.Columns => Columns;
 
-	public IObservable<int> FilteredCount { get; set; }
+    // TODO: Change to check the sort observable.
+    // public bool IsSorted => _comparer is not null;
 
-	public IObservable<int> TotalCount { get; set; }
+    public new event Action? Sorted;
 
-	public new DynamicColumnList<TModel> Columns { get; }
-	IColumns ITreeDataGridSource.Columns => Columns;
+    bool ITreeDataGridSource.SortBy(IColumn? column, ListSortDirection direction) => SortBy(column, direction);
 
-	// TODO: Change to check the sort observable.
-	// public bool IsSorted => _comparer is not null;
+    public bool SortBy(IColumn? column, ListSortDirection direction) {
+        if (column is IColumn<TModel> typedColumn) {
+            if (!Columns.Contains(typedColumn))
+                return true;
 
-	public new event Action? Sorted;
+            var comparer = typedColumn.GetComparison(direction);
 
-	bool ITreeDataGridSource.SortBy(IColumn? column, ListSortDirection direction) => SortBy(column, direction);
+            if (comparer is not null) {
+                var comparerInstance = new FuncComparer<TModel>(comparer);
 
-	public bool SortBy(IColumn? column, ListSortDirection direction) {
-		if (column is IColumn<TModel> typedColumn) {
-			if (!Columns.Contains(typedColumn))
-				return true;
+                // Trigger a new sort notification.
+                _sortSource.OnNext(comparerInstance);
+                Sorted?.Invoke();
+                foreach (var c in Columns)
+                    c.SortDirection = c == column ? direction : null;
+            }
 
-			var comparer = typedColumn.GetComparison(direction);
+            return true;
+        }
 
-			if (comparer is not null) {
-				var comparerInstance = new FuncComparer<TModel>(comparer);
-
-				// Trigger a new sort notification.
-				_sortSource.OnNext(comparerInstance);
-				Sorted?.Invoke();
-				foreach (var c in Columns)
-					c.SortDirection = c == column ? direction : null;
-			}
-
-			return true;
-		}
-
-		return false;
-	}
+        return false;
+    }
 }
-
-

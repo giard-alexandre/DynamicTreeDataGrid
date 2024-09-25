@@ -3,8 +3,6 @@ using System.Reactive.Subjects;
 
 using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
-using Avalonia.Controls.Selection;
-using Avalonia.Input;
 
 using DynamicData;
 using DynamicData.Aggregation;
@@ -51,7 +49,7 @@ public class DynamicHierarchicalTreeDataGridSource<TModel, TModelKey> : Hierarch
 
 
     public new DynamicColumnList<TModel> Columns { get; }
-    IColumns ITreeDataGridSource.Columns => Columns;
+    IColumns ITreeDataGridSource.Columns => Columns.DisplayedColumns;
 
     #region Override base sorted logic with IChangeSet sorting
 

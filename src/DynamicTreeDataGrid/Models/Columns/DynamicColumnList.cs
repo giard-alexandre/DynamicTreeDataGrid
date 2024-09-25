@@ -1,198 +1,85 @@
-using System.Collections.ObjectModel;
-
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Models;
-using Avalonia.Controls.Models.TreeDataGrid;
-using Avalonia.Utilities;
+using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace DynamicTreeDataGrid.Models.Columns;
 
-public class DynamicColumnList<TModel> : NotifyingListBase<IDynamicColumn<TModel>>, IDynamicColumns {
-	private readonly HashSet<string> _nameSet = [];
-	private double _viewportWidth;
+/// <summary>
+/// Maintains 2 lists of columns. The main one, which is exposed by default, is the list of all columns
+/// defined. The second, exposed through "DisplayedColumns" is the list that is shown to the user (Visible).
+/// </summary>
+/// <typeparam name="TModel"></typeparam>
+public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel> {
+    public DynamicColumnList() {
+        this.CollectionChanged += SyncFilteredCollection;
 
-	public event EventHandler? LayoutInvalidated;
+        // Subscribe to property changes for initial items
+        foreach (var item in this) {
+            ItemAdded(item);
+        }
+    }
 
-	/// <summary>
-	/// Adds the elements of the specified <see cref="IEnumerable{T}"/> to the end of this <see cref="DynamicColumnList{TModel}"/>
-	/// </summary>
-	/// <param name="items">The elements to add to this <see cref="DynamicColumnList{TModel}"/></param>
-	public void AddRange(IEnumerable<IDynamicColumn<TModel>> items) {
-		foreach (var item in items)
-			Add(item);
-	}
+    public DynamicColumnListBase<TModel> DisplayedColumns { get; } = [];
 
-	/// <inheritdoc cref="Collection{T}.InsertItem"/>
-	/// <remarks>Overrides the implementation, adding unique-name logic</remarks>
-	protected override void InsertItem(int index, IDynamicColumn<TModel> item) {
-		if (!_nameSet.Add(item.Name)) {
-			throw new ArgumentException("Attempted to add column with duplicate Name.");
-		}
-		base.InsertItem(index, item);
-	}
+    private void SyncFilteredCollection(object? sender, NotifyCollectionChangedEventArgs e) {
+        switch (e.Action) {
+            case NotifyCollectionChangedAction.Add:
+                foreach (var newItem in e.NewItems) {
+                    ItemAdded(newItem);
+                }
 
-	/// <inheritdoc cref="Collection{T}.SetItem"/>
-	/// <remarks>Overrides the implementation, adding unique-name logic</remarks>
-	protected override void SetItem(int index, IDynamicColumn<TModel> item) {
-		if (_nameSet.Contains(item.Name) && this[index].Name != item.Name) {
-			throw new ArgumentException("Attempted to add column with duplicate Name.");
-		}
+                break;
 
-		_nameSet.Add(item.Name);
-		base.SetItem(index, item);
-	}
+            case NotifyCollectionChangedAction.Remove:
+                foreach (var oldItem in e.OldItems) {
+                    DisplayedColumns.Remove((IDynamicColumn<TModel>)oldItem);
+                }
 
-	public Size CellMeasured(int columnIndex, int rowIndex, Size size) {
-		var column = (IUpdateColumnLayout)this[columnIndex];
-		return new Size(column.CellMeasured(size.Width, rowIndex), size.Height);
-	}
+                break;
 
-	public (int index, double x) GetColumnAt(double x) {
-		var start = 0.0;
+            case NotifyCollectionChangedAction.Replace:
+                for (int i = 0; i < e.OldItems.Count; i++) {
+                    DisplayedColumns[e.OldStartingIndex + i] = (IDynamicColumn<TModel>)e.NewItems[i];
+                }
 
-		for (var i = 0; i < Count; ++i) {
-			var column = this[i];
-			var end = start + column.ActualWidth;
-			if (x >= start && x < end)
-				return (i, start);
-			if (double.IsNaN(column.ActualWidth))
-				return (-1, -1);
-			start += column.ActualWidth;
-		}
+                break;
 
-		return (-1, -1);
-	}
+            case NotifyCollectionChangedAction.Move:
+                // Handle move if needed
+                break;
 
-	public double GetEstimatedWidth(double constraint) {
-		var hasStar = false;
-		var totalMeasured = 0.0;
-		var measuredCount = 0;
-		var unmeasuredCount = 0;
+            case NotifyCollectionChangedAction.Reset:
+                DisplayedColumns.Clear();
+                foreach (var column in this) {
+                    if (column.Visible) {
+                        DisplayedColumns.Add(column);
+                    }
+                }
 
-		for (var i = 0; i < Count; ++i) {
-			var column = (IUpdateColumnLayout)this[i];
+                break;
+        }
+    }
 
-			if (column.Width.IsStar) {
-				hasStar = true;
-				totalMeasured += column.MinActualWidth;
-			}
-			else if (!double.IsNaN(column.ActualWidth)) {
-				totalMeasured += column.ActualWidth;
-				++measuredCount;
-			}
-			else
-				++unmeasuredCount;
-		}
+    private void ItemAdded(object? item) {
+        if (item is not IDynamicColumn<TModel> column) return;
+        SubscribeToItemPropertyChanged(column);
+        if (column.Visible) {
+            DisplayedColumns.Add(column);
+        }
+    }
 
-		// If there are star columns, and all measured columns fit within the available space
-		// then we will fill the available space.
-		if (hasStar && !double.IsInfinity(constraint) && totalMeasured < constraint)
-			return constraint;
 
-		// If there are a mix of measured and unmeasured columns then use the measured columns
-		// to estimate the size of the unmeasured columns.
-		if (measuredCount > 0 && unmeasuredCount > 0) {
-			var estimated = (totalMeasured / measuredCount) * unmeasuredCount;
-			return totalMeasured + estimated;
-		}
+    private static void SubscribeToItemPropertyChanged(IDynamicColumn<TModel> item) {
+        item.PropertyChanged += Item_PropertyChanged;
+    }
 
-		return totalMeasured;
-	}
+    private static void UnsubscribeFromItemPropertyChanged(IDynamicColumn<TModel> item) {
+        item.PropertyChanged -= Item_PropertyChanged;
+    }
 
-	public void CommitActualWidths() => UpdateColumnSizes();
-
-	public void SetColumnWidth(int columnIndex, GridLength width) {
-		var column = this[columnIndex];
-
-		if (width != column.Width) {
-			((IUpdateColumnLayout)column).SetWidth(width);
-			LayoutInvalidated?.Invoke(this, EventArgs.Empty);
-			UpdateColumnSizes();
-		}
-	}
-
-	public void ViewportChanged(Rect viewport) {
-		if (_viewportWidth != viewport.Width) {
-			_viewportWidth = viewport.Width;
-			UpdateColumnSizes();
-		}
-	}
-
-	IDynamicColumn IReadOnlyList<IDynamicColumn>.this[int index] => this[index];
-	IEnumerator<IDynamicColumn> IEnumerable<IDynamicColumn>.GetEnumerator() => GetEnumerator();
-	IColumn IReadOnlyList<IColumn>.this[int index] => this[index];
-	IEnumerator<IColumn> IEnumerable<IColumn>.GetEnumerator() => GetEnumerator();
-
-	private void UpdateColumnSizes() {
-		var totalStars = 0.0;
-		var availableSpace = _viewportWidth;
-		var invalidated = false;
-
-		// First commit the actual width for all non-star width columns and get a total of the
-		// number of stars for star width columns.
-		for (var i = 0; i < Count; ++i) {
-			var column = (IUpdateColumnLayout)this[i];
-
-			if (!column.Width.IsStar) {
-				invalidated |= column.CommitActualWidth();
-				availableSpace -= NotNaN(column.ActualWidth);
-			}
-			else
-				totalStars += column.Width.Value;
-		}
-
-		if (totalStars > 0) {
-			// Size the star columns.
-			var starWidthWasConstrained = false;
-			var used = 0.0;
-
-			availableSpace = Math.Max(0, availableSpace);
-
-			// Do a first pass to calculate star column widths.
-			for (var i = 0; i < Count; ++i) {
-				var column = (IUpdateColumnLayout)this[i];
-
-				if (column.Width.IsStar) {
-					column.CalculateStarWidth(availableSpace, totalStars);
-					used += NotNaN(column.ActualWidth);
-					starWidthWasConstrained |= column.StarWidthWasConstrained;
-				}
-			}
-
-			// If the width of any star columns was constrained by their min/max size, and we
-			// actually had any space to distribute between star columns, then we need to update
-			// the star width for the non-constrained columns.
-			if (starWidthWasConstrained && MathUtilities.GreaterThan(availableSpace, 0)) {
-				for (var i = 0; i < Count; ++i) {
-					var column = (IUpdateColumnLayout)this[i];
-
-					if (column.StarWidthWasConstrained) {
-						availableSpace -= column.ActualWidth;
-						totalStars -= column.Width.Value;
-					}
-				}
-
-				for (var i = 0; i < Count; ++i) {
-					var column = (IUpdateColumnLayout)this[i];
-					if (column.Width.IsStar && !column.StarWidthWasConstrained)
-						column.CalculateStarWidth(availableSpace, totalStars);
-				}
-			}
-
-			// Finally commit the star column widths.
-			for (var i = 0; i < Count; ++i) {
-				var column = (IUpdateColumnLayout)this[i];
-
-				if (column.Width.IsStar) {
-					invalidated |= column.CommitActualWidth();
-				}
-			}
-		}
-
-		if (invalidated)
-			LayoutInvalidated?.Invoke(this, EventArgs.Empty);
-	}
-
-	private static double NotNaN(double v) => double.IsNaN(v) ? 0 : v;
+    private static void Item_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        if (sender is IDynamicColumn<TModel> item) {
+            // TODO: Remove/Add from list if visible is changed
+            Console.WriteLine($"Property '{e.PropertyName}' of item '{item.Name}' has changed to {item}");
+        }
+    }
 }

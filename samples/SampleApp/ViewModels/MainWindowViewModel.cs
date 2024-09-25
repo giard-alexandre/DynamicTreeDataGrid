@@ -42,7 +42,7 @@ public class MainWindowViewModel : ViewModelBase {
 
 public record Person {
 	public int Id { get; set; }
-	public string Name { get; set; }
+	public string Name { get; set; } = "";
 	public DateTime DateOfBirth { get; set; }
 	public double Height { get; set; }
 	public Name.Gender Gender { get; set; }

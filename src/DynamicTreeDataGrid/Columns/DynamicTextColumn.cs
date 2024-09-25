@@ -2,7 +2,6 @@ using System.Linq.Expressions;
 
 using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
-using Avalonia.Experimental.Data;
 
 using DynamicTreeDataGrid.Models.Columns;
 
@@ -10,6 +9,8 @@ namespace DynamicTreeDataGrid.Columns;
 
 public class DynamicTextColumn<TModel, TValue> : TextColumn<TModel, TValue>, IDynamicColumn<TModel>
 	where TModel : class {
+	private bool _visible = true;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TextColumn{TModel, TValue}"/> class.
 	/// </summary>
@@ -63,4 +64,13 @@ public class DynamicTextColumn<TModel, TValue> : TextColumn<TModel, TValue>, IDy
 	}
 
 	public string Name { get; init; }
+
+	public bool Visible {
+		get => _visible;
+		set {
+			if (value == _visible) return;
+			_visible = value;
+			RaisePropertyChanged();
+		}
+	}
 }

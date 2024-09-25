@@ -17,6 +17,8 @@ namespace DynamicTreeDataGrid.Columns;
 /// </remarks>
 public class DynamicCheckBoxColumn<TModel> : CheckBoxColumn<TModel>, IDynamicColumn<TModel>
 	where TModel : class {
+	private bool _visible = true;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DynamicCheckBoxColumn{TModel}"/> class.
 	/// </summary>
@@ -78,4 +80,13 @@ public class DynamicCheckBoxColumn<TModel> : CheckBoxColumn<TModel>, IDynamicCol
 	}
 
 	public string Name { get; init; }
+
+	public bool Visible {
+		get => _visible;
+		set {
+			if (value == _visible) return;
+			_visible = value;
+			RaisePropertyChanged();
+		}
+	}
 }

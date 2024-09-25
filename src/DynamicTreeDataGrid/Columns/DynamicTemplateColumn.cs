@@ -7,6 +7,8 @@ using DynamicTreeDataGrid.Models.Columns;
 namespace DynamicTreeDataGrid.Columns;
 
 public class DynamicTemplateColumn<TModel> : TemplateColumn<TModel>, IDynamicColumn<TModel> {
+	private bool _visible = true;
+
 	public DynamicTemplateColumn(string name,
 	                             object? header,
 	                             IDataTemplate cellTemplate,
@@ -28,4 +30,13 @@ public class DynamicTemplateColumn<TModel> : TemplateColumn<TModel>, IDynamicCol
 	}
 
 	public string Name { get; init; }
+
+	public bool Visible {
+		get => _visible;
+		set {
+			if (value == _visible) return;
+			_visible = value;
+			RaisePropertyChanged();
+		}
+	}
 }

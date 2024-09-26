@@ -9,6 +9,11 @@ namespace DynamicTreeDataGrid.Models.Columns;
 /// </summary>
 /// <typeparam name="TModel"></typeparam>
 public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel> {
+    /// <summary>
+    /// Columns that are used by the TreeDataGrid. Filters out the columns that should not be visible.
+    /// </summary>
+    public DynamicColumnListBase<TModel> DisplayedColumns { get; } = [];
+
     public DynamicColumnList() {
         this.CollectionChanged += SyncFilteredCollection;
 
@@ -18,7 +23,6 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel> {
         }
     }
 
-    public DynamicColumnListBase<TModel> DisplayedColumns { get; } = [];
 
     private void SyncFilteredCollection(object? sender, NotifyCollectionChangedEventArgs e) {
         switch (e.Action) {
@@ -31,15 +35,13 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel> {
 
             case NotifyCollectionChangedAction.Remove:
                 foreach (var oldItem in e.OldItems) {
-                    DisplayedColumns.Remove((IDynamicColumn<TModel>)oldItem);
+                    ItemRemoved(oldItem);
                 }
 
                 break;
 
             case NotifyCollectionChangedAction.Replace:
-                for (int i = 0; i < e.OldItems.Count; i++) {
-                    DisplayedColumns[e.OldStartingIndex + i] = (IDynamicColumn<TModel>)e.NewItems[i];
-                }
+                ItemReplaced(e);
 
                 break;
 
@@ -48,11 +50,12 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel> {
                 break;
 
             case NotifyCollectionChangedAction.Reset:
+                // Just clear the Displayed ones, we're re-adding everything anyways.
                 DisplayedColumns.Clear();
                 foreach (var column in this) {
-                    if (column.Visible) {
-                        DisplayedColumns.Add(column);
-                    }
+                    // Remove it just in case it was already present.
+                    column.PropertyChanged -= Item_PropertyChanged;
+                    ItemAdded(column);
                 }
 
                 break;
@@ -61,19 +64,30 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel> {
 
     private void ItemAdded(object? item) {
         if (item is not IDynamicColumn<TModel> column) return;
-        SubscribeToItemPropertyChanged(column);
+        ItemAdded(column);
+    }
+
+    private void ItemAdded(IDynamicColumn<TModel> column) {
+        column.PropertyChanged += Item_PropertyChanged;
         if (column.Visible) {
             DisplayedColumns.Add(column);
         }
     }
 
-
-    private static void SubscribeToItemPropertyChanged(IDynamicColumn<TModel> item) {
-        item.PropertyChanged += Item_PropertyChanged;
+    private void ItemRemoved(object? item) {
+        if (item is not IDynamicColumn<TModel> column) return;
+        column.PropertyChanged -= Item_PropertyChanged;
+        DisplayedColumns.Remove(column);
     }
 
-    private static void UnsubscribeFromItemPropertyChanged(IDynamicColumn<TModel> item) {
-        item.PropertyChanged -= Item_PropertyChanged;
+    private void ItemReplaced(NotifyCollectionChangedEventArgs e) {
+        throw new NotImplementedException("Replace is not implemented yet");
+        // for (int i = 0; i < e.OldItems.Count; i++) {
+        //     DisplayedColumns[e.OldStartingIndex + i] = (IDynamicColumn<TModel>)e.NewItems[i];
+        // }
+        // Unsubscribe from old item changes
+        // Subscribe to new item changes
+        // Replace in the filtered list too (somehow)
     }
 
     private static void Item_PropertyChanged(object? sender, PropertyChangedEventArgs e) {

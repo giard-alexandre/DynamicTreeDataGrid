@@ -24,6 +24,7 @@ public class MainWindowViewModel : ViewModelBase {
 			.RuleFor(person => person.Height, faker => faker.Random.Double())
 			.RuleFor(person => person.Gender, faker => faker.Person.Gender)
 			.RuleFor(person => person.Money, faker => faker.Finance.Amount(-1000M, 1000M, 5))
+			.RuleFor(person => person.IsChecked, faker => faker.Random.Bool())
 			.Generate(300)).ToObservableChangeSet(person => person.Id);
 
 		DataSource = new DynamicFlatTreeDataGridSource<Person, int>(data) {
@@ -35,6 +36,7 @@ public class MainWindowViewModel : ViewModelBase {
 				new DynamicTextColumn<Person, double>("Height-Raw", "Raw Height", person => person.Height),
 				new DynamicTextColumn<Person, Name.Gender>("Gender", "Gender", person => person.Gender), // To Template
 				new DynamicTextColumn<Person, decimal>("Money", "Money", person => person.Money),
+				new DynamicCheckBoxColumn<Person>("Checked", "Checked", person => person.IsChecked),
 			},
 		};
 	}
@@ -46,5 +48,6 @@ public record Person {
 	public DateTime DateOfBirth { get; set; }
 	public double Height { get; set; }
 	public Name.Gender Gender { get; set; }
-	public Decimal Money { get; set; }
+	public decimal Money { get; set; }
+	public bool IsChecked { get; set; }
 }

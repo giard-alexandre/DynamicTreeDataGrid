@@ -82,6 +82,7 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel> {
 
     private void ItemReplaced(NotifyCollectionChangedEventArgs e) {
         throw new NotImplementedException("Replace is not implemented yet");
+
         // for (int i = 0; i < e.OldItems.Count; i++) {
         //     DisplayedColumns[e.OldStartingIndex + i] = (IDynamicColumn<TModel>)e.NewItems[i];
         // }
@@ -90,10 +91,14 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel> {
         // Replace in the filtered list too (somehow)
     }
 
-    private static void Item_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (sender is IDynamicColumn<TModel> item) {
-            // TODO: Remove/Add from list if visible is changed
-            Console.WriteLine($"Property '{e.PropertyName}' of item '{item.Name}' has changed to {item}");
+    private void Item_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+        if (sender is IDynamicColumn<TModel> column && e.PropertyName == nameof(IDynamicColumn.Visible)) {
+            if (column.Visible && !DisplayedColumns.Contains(column)) {
+                DisplayedColumns.Add(column);
+            }
+            else {
+                DisplayedColumns.Remove(column);
+            }
         }
     }
 }

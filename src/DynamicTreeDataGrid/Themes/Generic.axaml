@@ -5,14 +5,10 @@
 
     <StyleInclude Source="avares://Avalonia.Controls.TreeDataGrid/Themes/Generic.axaml" />
 
-    <Style Selector="FlyoutPresenter.NoPadding">
-        <Setter Property="Padding" Value="0" />
-    </Style>
-
     <Style Selector="TreeDataGridColumnHeader Border#DataGridBorder">
         <Setter Property="ContextFlyout">
             <!-- The ContextFlyout Used for per-column filtering -->
-            <Flyout FlyoutPresenterClasses="NoPadding">
+            <Flyout>
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <StackPanel.Styles>

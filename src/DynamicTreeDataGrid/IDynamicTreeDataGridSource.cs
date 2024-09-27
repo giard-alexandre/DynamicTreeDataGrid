@@ -2,7 +2,7 @@
 
 namespace DynamicTreeDataGrid;
 
-public interface IDynamicTreeDataGridSource<TModel> : ITreeDataGridSource<TModel> {
+public interface IDynamicTreeDataGridSource : ITreeDataGridSource {
     /// <summary>
     /// The amount of items in the table, once filtered.
     /// </summary>

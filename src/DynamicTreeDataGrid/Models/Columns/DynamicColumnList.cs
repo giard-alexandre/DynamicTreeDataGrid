@@ -8,7 +8,8 @@ namespace DynamicTreeDataGrid.Models.Columns;
 /// defined. The second, exposed through "DisplayedColumns" is the list that is shown to the user (Visible).
 /// </summary>
 /// <typeparam name="TModel"></typeparam>
-public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel> {
+public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>
+    where TModel : class {
     /// <summary>
     /// Columns that are used by the TreeDataGrid. Filters out the columns that should not be visible.
     /// </summary>

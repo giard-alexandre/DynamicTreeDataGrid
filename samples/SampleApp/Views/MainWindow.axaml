@@ -3,7 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:SampleApp.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:dynamicTreeDataGrid="clr-namespace:DynamicTreeDataGrid;assembly=DynamicTreeDataGrid"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="450"
         x:Class="SampleApp.Views.MainWindow"
         x:DataType="viewModels:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
@@ -16,12 +17,12 @@
 	</Design.DataContext>
 
 	<DockPanel>
-		<TreeDataGrid Source="{Binding DataSource}">
+		<dynamicTreeDataGrid:DynamicTreeDataGrid Source="{Binding DataSource}">
 			<TreeDataGrid.Resources>
 				<DataTemplate x:Key="HeightCell" DataType="{x:Type viewModels:Person}">
-					<TextBlock Text="{Binding Height, StringFormat={}{0:0.0}}"/>
+					<TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Height, StringFormat={}{0:0.0}}"/>
 				</DataTemplate>
 			</TreeDataGrid.Resources>
-		</TreeDataGrid>
+		</dynamicTreeDataGrid:DynamicTreeDataGrid>
 	</DockPanel>
 </Window>

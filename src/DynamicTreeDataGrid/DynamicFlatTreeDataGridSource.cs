@@ -3,25 +3,25 @@ using System.Reactive.Subjects;
 
 using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
-using Avalonia.Controls.Selection;
-using Avalonia.Input;
 
 using DynamicData;
 using DynamicData.Aggregation;
 
+using DynamicTreeDataGrid.Models.Columns;
+
 namespace DynamicTreeDataGrid;
 
-public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : IDynamicTreeDataGridSource<TModel>
+public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : FlatTreeDataGridSource<TModel>,
+    IDynamicTreeDataGridSource<TModel>
     where TModel : class where TModelKey : notnull {
-    private readonly FlatTreeDataGridSource<TModel> treeDataGridSourceImplementation;
+    // By default, the filtering function just includes all rows.
+    private readonly ISubject<Func<TModel, bool>> _filterSource = new BehaviorSubject<Func<TModel, bool>>(_ => true);
     private readonly IObservable<IChangeSet<TModel, TModelKey>> _changeSet;
     private readonly IObservable<IComparer<TModel>> _sort;
     private readonly ISubject<IComparer<TModel>> _sortSource = new Subject<IComparer<TModel>>();
-
-    private readonly ISubject<Func<TModel, bool>> _filterSource = new BehaviorSubject<Func<TModel, bool>>(model => true);
     private readonly IObservable<Func<TModel, bool>> _itemsFilter;
 
-    public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes) {
+    public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes) : base([]) {
         _itemsFilter = _filterSource;
 
         // Use RefCount to avoid duplicate work
@@ -37,31 +37,26 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : IDynamicTreeData
             .DisposeMany()
             .Subscribe(set => Console.WriteLine("Changeset changed."));
 
-        treeDataGridSourceImplementation = new FlatTreeDataGridSource<TModel>(list);
+        Items = list;
 
         // TODO: Setup Sorted event for treeDataGridSourceImplementation?
     }
 
-    public IObservable<int> FilteredCount { get; set; }
 
-    public IObservable<int> TotalCount { get; set; }
 
-    public event PropertyChangedEventHandler? PropertyChanged {
-        add => treeDataGridSourceImplementation.PropertyChanged += value;
-        remove => treeDataGridSourceImplementation.PropertyChanged -= value;
-    }
+    public IObservable<int> FilteredCount { get; }
+    public IObservable<int> TotalCount { get; }
 
-    public void DragDropRows(ITreeDataGridSource source,
-                             IEnumerable<IndexPath> indexes,
-                             IndexPath targetIndex,
-                             TreeDataGridRowDropPosition position,
-                             DragDropEffects effects) {
-        ((ITreeDataGridSource)treeDataGridSourceImplementation).DragDropRows(source, indexes, targetIndex, position,
-            effects);
-    }
+    public new DynamicColumnList<TModel> Columns { get; } = [];
+    IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;
+    IColumns ITreeDataGridSource.Columns => Columns.DisplayedColumns;
 
-    public IEnumerable<object>? GetModelChildren(object model) =>
-        ((ITreeDataGridSource)treeDataGridSourceImplementation).GetModelChildren(model);
+    // TODO: Change to check the sort observable.
+    // public bool IsSorted => _comparer is not null;
+
+    public new event Action? Sorted;
+
+    bool ITreeDataGridSource.SortBy(IColumn? column, ListSortDirection direction) => SortBy(column, direction);
 
     public bool SortBy(IColumn? column, ListSortDirection direction) {
         if (column is IColumn<TModel> typedColumn) {
@@ -85,21 +80,4 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : IDynamicTreeData
 
         return false;
     }
-
-    public ColumnList<TModel> Columns => treeDataGridSourceImplementation.Columns;
-    IColumns ITreeDataGridSource.Columns => Columns;
-
-    public IRows Rows => treeDataGridSourceImplementation.Rows;
-
-    public ITreeDataGridSelection? Selection => treeDataGridSourceImplementation.Selection;
-
-    public bool IsHierarchical => treeDataGridSourceImplementation.IsHierarchical;
-
-    public bool IsSorted => treeDataGridSourceImplementation.IsSorted;
-
-    IEnumerable<TModel> ITreeDataGridSource<TModel>.Items => treeDataGridSourceImplementation.Items;
-
-    IEnumerable<object> ITreeDataGridSource.Items => ((ITreeDataGridSource)treeDataGridSourceImplementation).Items;
-
-    public event Action? Sorted;
 }

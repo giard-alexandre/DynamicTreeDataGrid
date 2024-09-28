@@ -50,6 +50,17 @@ public class DynamicColumnListBase<TModel> : NotifyingListBase<IDynamicColumn<TM
 		base.SetItem(index, item);
 	}
 
+	protected override void ClearItems() {
+		base.ClearItems();
+		_nameSet.Clear();
+	}
+
+	protected override void RemoveItem(int index) {
+		var removedName = this[index].Name;
+		_nameSet.Remove(removedName);
+		base.RemoveItem(index);
+	}
+
 	public Size CellMeasured(int columnIndex, int rowIndex, Size size) {
 		var column = (IUpdateColumnLayout)this[columnIndex];
 		return new Size(column.CellMeasured(size.Width, rowIndex), size.Height);

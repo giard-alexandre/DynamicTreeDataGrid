@@ -15,7 +15,7 @@ namespace DynamicTreeDataGrid.Models.Columns;
 /// <remarks>
 /// Basically a re-implementation of <see cref="ColumnList{TModel}"/> that enforces a unique <c>Name</c> key
 /// </remarks>
-public class DynamicColumnListBase<TModel> : NotifyingListBase<IDynamicColumn<TModel>>, IDynamicColumns {
+public class DynamicColumnListBase<TModel> : NotifyingListBase<IDynamicColumn<TModel>>, IDynamicColumnsBase {
 	private readonly HashSet<string> _nameSet = [];
 	private double _viewportWidth;
 

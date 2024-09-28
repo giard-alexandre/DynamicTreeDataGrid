@@ -39,7 +39,6 @@ public class DynamicHierarchicalTreeDataGridSource<TModel, TModelKey> : Hierarch
             .Subscribe(set => Console.WriteLine("Changeset changed."));
 
         Items = list;
-        Columns = [];
 
         // TODO: Setup Sorted event for treeDataGridSourceImplementation?
     }
@@ -48,7 +47,8 @@ public class DynamicHierarchicalTreeDataGridSource<TModel, TModelKey> : Hierarch
     public IObservable<int> TotalCount { get; }
 
 
-    public new DynamicColumnList<TModel> Columns { get; }
+    public new DynamicColumnList<TModel> Columns { get; } = [];
+    IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;
     IColumns ITreeDataGridSource.Columns => Columns.DisplayedColumns;
 
     #region Override base sorted logic with IChangeSet sorting

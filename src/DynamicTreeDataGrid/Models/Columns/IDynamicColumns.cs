@@ -1,5 +1,5 @@
-using Avalonia.Controls.Models.TreeDataGrid;
-
 namespace DynamicTreeDataGrid.Models.Columns;
 
-public interface IDynamicColumns : IColumns, IReadOnlyList<IDynamicColumn>;
+public interface IDynamicColumns : IDynamicColumnsBase {
+	public IDynamicColumnsBase DisplayedColumns { get; }
+}

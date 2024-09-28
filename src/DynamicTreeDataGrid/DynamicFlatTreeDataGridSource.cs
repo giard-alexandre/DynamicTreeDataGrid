@@ -38,7 +38,6 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : FlatTreeDataGrid
             .Subscribe(set => Console.WriteLine("Changeset changed."));
 
         Items = list;
-        Columns = [];
 
         // TODO: Setup Sorted event for treeDataGridSourceImplementation?
     }
@@ -48,7 +47,8 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : FlatTreeDataGrid
     public IObservable<int> FilteredCount { get; }
     public IObservable<int> TotalCount { get; }
 
-    public new DynamicColumnList<TModel> Columns { get; }
+    public new DynamicColumnList<TModel> Columns { get; } = [];
+    IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;
     IColumns ITreeDataGridSource.Columns => Columns.DisplayedColumns;
 
     // TODO: Change to check the sort observable.

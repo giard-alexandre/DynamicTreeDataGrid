@@ -1,8 +1,12 @@
 ﻿using Avalonia.Controls;
 
+using DynamicTreeDataGrid.Models.Columns;
+
 namespace DynamicTreeDataGrid;
 
 public interface IDynamicTreeDataGridSource : ITreeDataGridSource {
+	new IDynamicColumns Columns { get; }
+
     /// <summary>
     /// The amount of items in the table, once filtered.
     /// </summary>

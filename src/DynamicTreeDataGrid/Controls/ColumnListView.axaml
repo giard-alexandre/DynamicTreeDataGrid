@@ -6,32 +6,33 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DynamicTreeDataGrid.Controls.ColumnListView"
              x:DataType="columns:IDynamicColumns">
-    <ScrollViewer MaxWidth="400">
-        <ItemsRepeater ItemsSource="{Binding .}">
-            <ItemsRepeater.Layout>
-                <StackLayout Spacing="5" />
-            </ItemsRepeater.Layout>
-            <ItemsRepeater.ItemTemplate>
-                <DataTemplate x:DataType="columns:IDynamicColumn">
-                    <Border CornerRadius="5" Margin="2" ToolTip.Tip="{Binding Name}">
-                        <StackPanel Orientation="Horizontal">
-                            <ToggleSwitch IsChecked="{Binding Visible}" />
-                            <ContentControl Content="{Binding Header}">
-                                <ContentControl.DataTemplates>
-                                    <!-- DataTemplate for String -->
-                                    <DataTemplate DataType="x:String">
-                                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" />
-                                    </DataTemplate>
-                                    <!-- DataTemplate for Control -->
-                                    <DataTemplate DataType="{x:Type Control}">
-                                        <ContentPresenter Content="{Binding}" />
-                                    </DataTemplate>
-                                </ContentControl.DataTemplates>
-                            </ContentControl>
-                        </StackPanel>
-                    </Border>
-                </DataTemplate>
-            </ItemsRepeater.ItemTemplate>
-        </ItemsRepeater>
-    </ScrollViewer>
+	<ScrollViewer HorizontalAlignment="Stretch">
+		<ItemsRepeater ItemsSource="{Binding .}">
+			<ItemsRepeater.Layout>
+				<NonVirtualizingStackLayout Spacing="5" />
+			</ItemsRepeater.Layout>
+			<ItemsRepeater.ItemTemplate>
+				<DataTemplate x:DataType="columns:IDynamicColumn">
+					<Border CornerRadius="5" Margin="2" ToolTip.Tip="{Binding Name}">
+						<StackPanel Orientation="Horizontal">
+							<ToggleSwitch IsChecked="{Binding Visible}" OnContent="" OffContent="" />
+							<ContentControl Content="{Binding Header}">
+								<ContentControl.DataTemplates>
+									<!-- DataTemplate for String -->
+									<DataTemplate DataType="x:String">
+										<TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis"
+										           VerticalAlignment="Center" />
+									</DataTemplate>
+									<!-- DataTemplate for Control -->
+									<DataTemplate DataType="{x:Type Control}">
+										<ContentPresenter Content="{Binding}" />
+									</DataTemplate>
+								</ContentControl.DataTemplates>
+							</ContentControl>
+						</StackPanel>
+					</Border>
+				</DataTemplate>
+			</ItemsRepeater.ItemTemplate>
+		</ItemsRepeater>
+	</ScrollViewer>
 </UserControl>

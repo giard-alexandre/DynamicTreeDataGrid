@@ -47,8 +47,8 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : FlatTreeDataGrid
     public IObservable<int> FilteredCount { get; }
     public IObservable<int> TotalCount { get; }
 
-    public new DynamicColumnList<TModel> Columns { get; } = [];
-    IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;
+    public new DynamicColumnCache<TModel> Columns { get; } = new();
+    IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns.VisibleColumns;
     IColumns ITreeDataGridSource.Columns => Columns.DisplayedColumns;
 
     // TODO: Change to check the sort observable.

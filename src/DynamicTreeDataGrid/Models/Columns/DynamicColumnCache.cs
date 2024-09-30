@@ -24,6 +24,8 @@ public class DynamicColumnCache<TModel> : IDynamicColumnsBase, IDisposable {
         _sourceDisposable = _source.Connect().Filter(column => column.Visible).Bind(out _visibleColumns).Subscribe();
     }
 
+    public ReadOnlyObservableCollection<IDynamicColumn<TModel>> VisibleColumns => _visibleColumns;
+
     #region Collection Interface Implementations
 
     IDynamicColumn IReadOnlyList<IDynamicColumn>.this[int index] => _collection[index];

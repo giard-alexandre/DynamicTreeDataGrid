@@ -1,4 +1,6 @@
-﻿using Avalonia;
+﻿using System.Collections.ObjectModel;
+
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Models;
 using Avalonia.Controls.Models.TreeDataGrid;
@@ -8,12 +10,66 @@ using DynamicData;
 
 namespace DynamicTreeDataGrid.Models.Columns;
 
-public class DynamicColumnCache<TModel> : NotifyingListBase<IDynamicColumn<TModel>>, IDynamicColumnsBase {
+public class DynamicColumnCache<TModel> : IDynamicColumnsBase {
     private readonly SourceCache<IDynamicColumn<TModel>, string> _source = new(column => column.Name);
 
-    public DynamicColumnCache() {
+    private readonly ReadOnlyObservableCollection<IDynamicColumn<TModel>> _collection =
+	    ReadOnlyObservableCollection<IDynamicColumn<TModel>>.Empty;
 
+    public DynamicColumnCache() {
     }
+
+    #region Collection Interface Implementations
+
+    // IDynamicColumn IReadOnlyList<IDynamicColumn>.this[int index] => this[index];
+    // IEnumerator<IDynamicColumn> IEnumerable<IDynamicColumn>.GetEnumerator() => GetEnumerator();
+    // IColumn IReadOnlyList<IColumn>.this[int index] => this[index];
+    // IEnumerator<IColumn> IEnumerable<IColumn>.GetEnumerator() => GetEnumerator();
+    #endregion
+
+    #region Base Collection Overrides
+
+    // /// <summary>
+    // /// Adds the elements of the specified <see cref="IEnumerable{T}"/> to the end of this <see cref="DynamicColumnListBase{TModel}"/>
+    // /// </summary>
+    // /// <param name="items">The elements to add to this <see cref="DynamicColumnListBase{TModel}"/></param>
+    // public void AddRange(IEnumerable<IDynamicColumn<TModel>> items) {
+	   //  foreach (var item in items)
+		  //   Add(item);
+    // }
+    //
+    // /// <inheritdoc cref="Collection{T}.InsertItem"/>
+    // /// <remarks>Overrides the implementation, adding unique-name logic</remarks>
+    // protected override void InsertItem(int index, IDynamicColumn<TModel> item) {
+	   //  if (!_nameSet.Add(item.Name)) {
+		  //   throw new ArgumentException("Attempted to add column with duplicate Name.");
+	   //  }
+	   //  base.InsertItem(index, item);
+    // }
+    //
+    // /// <inheritdoc cref="Collection{T}.SetItem"/>
+    // /// <remarks>Overrides the implementation, adding unique-name logic</remarks>
+    // protected override void SetItem(int index, IDynamicColumn<TModel> item) {
+	   //  if (_nameSet.Contains(item.Name) && this[index].Name != item.Name) {
+		  //   throw new ArgumentException("Attempted to add column with duplicate Name.");
+	   //  }
+    //
+	   //  _nameSet.Add(item.Name);
+	   //  base.SetItem(index, item);
+    // }
+    //
+    // protected override void ClearItems() {
+	   //  base.ClearItems();
+	   //  _nameSet.Clear();
+    // }
+    //
+    // protected override void RemoveItem(int index) {
+	   //  var removedName = this[index].Name;
+	   //  _nameSet.Remove(removedName);
+	   //  base.RemoveItem(index);
+    // }
+
+    #endregion
 
 
     #region IColumn Functions

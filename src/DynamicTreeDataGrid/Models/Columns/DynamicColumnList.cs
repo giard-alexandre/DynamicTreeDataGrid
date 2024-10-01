@@ -10,12 +10,12 @@ namespace DynamicTreeDataGrid.Models.Columns;
 /// <typeparam name="TModel"></typeparam>
 public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamicColumns
     where TModel : class {
-	private readonly DynamicColumnListBase<TModel> _displayedColumns = [];
+    private readonly DynamicColumnListBase<TModel> _displayedColumns = [];
 
-	/// <summary>
-	/// Columns that are used by the TreeDataGrid. Filters out the columns that should not be visible.
-	/// </summary>
-	public IDynamicColumnsBase DisplayedColumns => _displayedColumns;
+    /// <summary>
+    /// Columns that are used by the TreeDataGrid. Filters out the columns that should not be visible.
+    /// </summary>
+    public IDynamicColumnsBase DisplayedColumns => _displayedColumns;
 
     public DynamicColumnList() {
         this.CollectionChanged += SyncFilteredCollection;
@@ -83,9 +83,11 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
 
     private void ItemAdded(IDynamicColumn<TModel> column) {
         column.PropertyChanged += Item_PropertyChanged;
-        if (column.Visible) {
-	        _displayedColumns.Add(column);
-        }
+        if (!column.Visible) return;
+
+        var index = IndexOf(column);
+        var offset = GetDisplayedOffset(index);
+        _displayedColumns.Insert(index - offset, column);
     }
 
     private void ItemRemoved(object? item) {
@@ -105,14 +107,27 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
         // Replace in the filtered list too (somehow)
     }
 
+    private int GetDisplayedOffset(int desiredIndex) {
+        var indexOffset = 0;
+        for (int i = 0; i < desiredIndex; i++) {
+            if (!this[i].Visible) {
+                indexOffset++;
+            }
+        }
+
+        return indexOffset;
+    }
+
     private void Item_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
-        if (sender is IDynamicColumn<TModel> column && e.PropertyName == nameof(IDynamicColumn.Visible)) {
-            if (column.Visible && !_displayedColumns.Contains(column)) {
-	            _displayedColumns.Add(column);
-            }
-            else {
-	            _displayedColumns.Remove(column);
-            }
+        if (sender is not IDynamicColumn<TModel> column || e.PropertyName != nameof(IDynamicColumn.Visible)) return;
+
+        if (column.Visible && !_displayedColumns.Contains(column)) {
+            var index = IndexOf(column);
+            var offset = GetDisplayedOffset(index);
+            _displayedColumns.Insert(index - offset, column);
+        }
+        else {
+            _displayedColumns.Remove(column);
         }
     }
 }

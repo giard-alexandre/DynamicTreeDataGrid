@@ -13,7 +13,7 @@ namespace DynamicTreeDataGrid.Controls;
 public partial class ColumnListView : UserControl {
     private const string DragItemFormat = "icolumn-item-format";
 
-    private Border? _draggedItem;
+    private ColumnItemView? _draggedItem;
 
     public ColumnListView() {
         InitializeComponent();
@@ -25,7 +25,7 @@ public partial class ColumnListView : UserControl {
     private async void OnPointerPressed(object? sender, PointerPressedEventArgs e) {
         // We don't care about anything that isn't one of our list items.
         // TODO: Change to a custom control?
-        if (sender is not Border border) return;
+        if (sender is not ColumnItemView border) return;
         if (border.DataContext is not IColumn column) return;
 
         _draggedItem = border;
@@ -79,14 +79,14 @@ public partial class ColumnListView : UserControl {
         switch (control) {
             case null:
                 return false;
-            case Border { DataContext: IDynamicColumn col }:
+            case ColumnItemView { DataContext: IDynamicColumn col }:
                 column = col;
                 return true;
             default: {
                 var itemControl = control.GetVisualAncestors()
-                    .OfType<Border>()
+                    .OfType<ColumnItemView>()
                     .FirstOrDefault(x => x.DataContext is IDynamicColumn);
-                if (itemControl is not Border { DataContext: IDynamicColumn col }) return false;
+                if (itemControl is not ColumnItemView { DataContext: IDynamicColumn col }) return false;
                 column = col;
                 return true;
             }

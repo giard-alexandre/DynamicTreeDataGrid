@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Input;
@@ -13,7 +12,6 @@ namespace DynamicTreeDataGrid.Controls;
 
 public partial class ColumnListView : UserControl {
     private const string DragItemFormat = "icolumn-item-format";
-    private readonly Point _mouseOffset = new(-5, -5);
 
     private Border? _draggedItem;
 
@@ -45,8 +43,8 @@ public partial class ColumnListView : UserControl {
 
         // Render the item under the mouse.
         var currentPosition = e.GetPosition(MainContainer);
-        var offsetX = currentPosition.X - _draggedItem.Bounds.Position.X;
-        var offsetY = currentPosition.Y - _draggedItem.Bounds.Position.Y;
+        var offsetX = currentPosition.X - _draggedItem.Bounds.Position.X - _draggedItem.Bounds.Width/2;
+        var offsetY = currentPosition.Y - _draggedItem.Bounds.Position.Y - _draggedItem.Bounds.Height/2;
         _draggedItem.RenderTransform = new TranslateTransform(offsetX, offsetY);
 
     }

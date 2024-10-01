@@ -24,7 +24,6 @@ public partial class ColumnListView : UserControl {
 
     private async void OnPointerPressed(object? sender, PointerPressedEventArgs e) {
         // We don't care about anything that isn't one of our list items.
-        // TODO: Change to a custom control?
         if (sender is not ColumnItemView border) return;
         if (border.DataContext is not IColumn column) return;
 

@@ -7,6 +7,7 @@
         <entry key="samples/SampleApp/Views/MainWindow.axaml" value="samples/SampleApp/SampleApp.csproj" />
         <entry key="src/DynamicTreeDataGrid/Controls/ColumnEditor.axaml" value="samples/SampleApp/SampleApp.csproj" />
         <entry key="src/DynamicTreeDataGrid/Controls/ColumnEditorWindow.axaml" value="samples/SampleApp/SampleApp.csproj" />
+        <entry key="src/DynamicTreeDataGrid/Controls/ColumnItemView.axaml" value="samples/SampleApp/SampleApp.csproj" />
         <entry key="src/DynamicTreeDataGrid/Controls/ColumnList.axaml" value="samples/SampleApp/SampleApp.csproj" />
         <entry key="src/DynamicTreeDataGrid/Controls/ColumnListView.axaml" value="samples/SampleApp/SampleApp.csproj" />
         <entry key="src/DynamicTreeDataGrid/Themes/Generic.axaml" value="samples/SampleApp/SampleApp.csproj" />

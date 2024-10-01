@@ -7,18 +7,19 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DynamicTreeDataGrid.Controls.ColumnListView"
              x:DataType="columns:IDynamicColumns">
-	<ScrollViewer Name="MainContainer" HorizontalAlignment="Stretch">
-		<!-- Background="Transparent" is required here in order for the DragDrop stuff to work properly. -->
-		<ItemsRepeater ItemsSource="{Binding .}" DragDrop.AllowDrop="True" Background="Transparent">
-			<ItemsRepeater.Layout>
-				<NonVirtualizingStackLayout />
-			</ItemsRepeater.Layout>
-			<ItemsRepeater.ItemTemplate>
-				<DataTemplate x:DataType="columns:IDynamicColumn">
-					<controls:ColumnItemView ToolTip.Tip="{Binding Name}"
-					                         PointerPressed="OnPointerPressed" />
-				</DataTemplate>
-			</ItemsRepeater.ItemTemplate>
-		</ItemsRepeater>
-	</ScrollViewer>
+    <ScrollViewer Name="MainContainer" HorizontalAlignment="Stretch">
+        <!-- Background="Transparent" is required here in order for the DragDrop stuff to work properly. -->
+        <ItemsRepeater ItemsSource="{Binding .}" DragDrop.AllowDrop="True"
+                       Background="Transparent" Margin="10">
+            <ItemsRepeater.Layout>
+                <NonVirtualizingStackLayout />
+            </ItemsRepeater.Layout>
+            <ItemsRepeater.ItemTemplate>
+                <DataTemplate x:DataType="columns:IDynamicColumn">
+                    <controls:ColumnItemView ToolTip.Tip="{Binding Name}" Padding="5"
+                                             PointerPressed="OnPointerPressed" />
+                </DataTemplate>
+            </ItemsRepeater.ItemTemplate>
+        </ItemsRepeater>
+    </ScrollViewer>
 </UserControl>

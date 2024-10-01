@@ -5,6 +5,6 @@
         xmlns:controls="clr-namespace:DynamicTreeDataGrid.Controls"
         mc:Ignorable="d" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner"
         x:Class="DynamicTreeDataGrid.Controls.ColumnEditorWindow"
-        Title="ColumnEditorWindow">
+        Title="ColumnEditorWindow" MinWidth="300">
 	<controls:ColumnListView />
 </Window>

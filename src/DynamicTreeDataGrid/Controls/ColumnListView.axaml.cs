@@ -29,6 +29,8 @@ public partial class ColumnListView : UserControl {
         if (border.DataContext is not IColumn column) return;
 
         _draggedItem = border;
+        // Disable Hit test otherwise this control will be the drop target since the mouse is over it.
+        _draggedItem.IsHitTestVisible = false;
 
         var dragData = new DataObject();
         dragData.Set(DragItemFormat, column);
@@ -41,7 +43,7 @@ public partial class ColumnListView : UserControl {
 
         if (_draggedItem is null) return;
 
-        // Render the item under the mouse.
+        // Render the item under the mouse and follow the mouse.
         var currentPosition = e.GetPosition(MainContainer);
         var offsetX = currentPosition.X - _draggedItem.Bounds.Position.X - _draggedItem.Bounds.Width/2;
         var offsetY = currentPosition.Y - _draggedItem.Bounds.Position.Y - _draggedItem.Bounds.Height/2;
@@ -53,13 +55,14 @@ public partial class ColumnListView : UserControl {
         var data = e.Data.Get(DragItemFormat);
 
         if (data is not IDynamicColumn sourceColumn) {
-            Console.WriteLine("No task item");
+            Console.WriteLine("No column item");
             return;
         }
 
         // Remove dragged item transform if its set.
         if (_draggedItem is not null) {
             _draggedItem.RenderTransform = null;
+            _draggedItem.IsHitTestVisible = true;
         }
 
         // Get the list element where we dropped the source element. (e.Source is the "target" in this case)

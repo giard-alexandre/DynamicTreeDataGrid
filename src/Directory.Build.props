@@ -1,0 +1,43 @@
+<Project>
+  <PropertyGroup Label="Package Info">
+    <RepositoryUrl>https://github.com/giard-alexandre/DynamicTreeDataGrid</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/giard-alexandre/DynamicTreeDataGrid</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <Description>Library used to add DynamicData-oriented features to Avalonias TreeDataGrid.</Description>
+    <PackageTags>c-sharp;xaml;cross-platform;dotnet;dotnetcore;avalonia;avaloniaui;treedatagrid</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Authors>Alexandre Giard</Authors>
+    <!--x-release-please-start-version-->
+    <Version>0.0.1</Version>
+    <!--x-release-please-end-->
+<!--    TODO: Sign? -->
+<!--    <SignAssembly>True</SignAssembly>-->
+<!--    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Fonts.Avalonia.snk</AssemblyOriginatorKeyFile>-->
+  </PropertyGroup>
+
+  <!--  Add Debug Symbols-->
+  <PropertyGroup>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <!-- Add Package Icon -->
+  	<PropertyGroup>
+<!--  		<PackageIcon>Fonts.Avalonia_Logo.png</PackageIcon>-->
+  	</PropertyGroup>
+
+  	<ItemGroup Label="PackageIcon">
+<!--  		<None Include="$(MSBuildThisFileDirectory)/../assets/Fonts.Avalonia_Logo.png" Pack="true" Visible="false" PackagePath=""/>-->
+  	</ItemGroup>
+
+  <!-- Add Package README -->
+  <PropertyGroup>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup Label="PackageIcon" Condition="'$(ProjectName.EndsWith(`Test`))' == 'false'">
+    <None Include="$(MSBuildThisFileDirectory)/../README.md" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)/SourceLink.props" />
+</Project>

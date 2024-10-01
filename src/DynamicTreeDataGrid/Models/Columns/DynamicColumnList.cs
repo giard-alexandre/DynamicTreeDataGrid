@@ -26,6 +26,17 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
         }
     }
 
+    public void Move(IDynamicColumn oldLocation, IDynamicColumn newLocation) {
+        var oldIndex = IndexOf((IDynamicColumn<TModel>)oldLocation);
+        var newIndex = IndexOf((IDynamicColumn<TModel>)newLocation);
+        Move(oldIndex, newIndex);
+    }
+
+    public void Move(int oldIndex, int newIndex) {
+        var item = base[oldIndex];
+        base.RemoveItem(oldIndex);
+        base.InsertItem(newIndex, item);
+    }
 
     private void SyncFilteredCollection(object? sender, NotifyCollectionChangedEventArgs e) {
         switch (e.Action) {

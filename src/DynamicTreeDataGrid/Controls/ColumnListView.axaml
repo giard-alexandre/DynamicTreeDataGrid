@@ -6,14 +6,17 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DynamicTreeDataGrid.Controls.ColumnListView"
              x:DataType="columns:IDynamicColumns">
-	<ScrollViewer HorizontalAlignment="Stretch">
-		<ItemsRepeater ItemsSource="{Binding .}">
+	<ScrollViewer Name="MainContainer" HorizontalAlignment="Stretch">
+		<!-- Background="Transparent" is required here in order for the DragDrop stuff to work properly. -->
+		<ItemsRepeater ItemsSource="{Binding .}" DragDrop.AllowDrop="True" Background="Transparent">
 			<ItemsRepeater.Layout>
 				<NonVirtualizingStackLayout />
 			</ItemsRepeater.Layout>
 			<ItemsRepeater.ItemTemplate>
 				<DataTemplate x:DataType="columns:IDynamicColumn">
-					<Border CornerRadius="5" Margin="2" BorderBrush="{DynamicResource TreeDataGridGridLinesBrush}" BorderThickness="2" ToolTip.Tip="{Binding Name}">
+					<Border CornerRadius="5" Padding="2" BorderBrush="{DynamicResource TreeDataGridGridLinesBrush}"
+					        BorderThickness="2" ToolTip.Tip="{Binding Name}"
+					        PointerPressed="OnPointerPressed">
 						<StackPanel Orientation="Horizontal">
 							<Border Padding="10">
 								<PathIcon Width="14"

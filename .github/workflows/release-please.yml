@@ -55,6 +55,7 @@ jobs:
     name: 📦 Publish to NuGet
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       packages: write
     needs:
       - release-please

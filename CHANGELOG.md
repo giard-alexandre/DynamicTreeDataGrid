@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.1](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.2.0...v0.2.1) (2024-10-02)
+
+
+### 🐛 Bug Fixes
+
+* indentation ([f341c0a](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/f341c0a5f6ad5f6a50bcc7cc1b58856e8ea3b044))
+* sample unpackable ([d0d98b5](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/d0d98b5a4f2fdba4d4a0b96daaaecdbac0a15a19))
+
 ## [0.2.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.1.0...v0.2.0) (2024-10-02)
 
 

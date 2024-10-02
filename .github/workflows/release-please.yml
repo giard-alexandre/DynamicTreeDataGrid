@@ -55,7 +55,7 @@ jobs:
     name: 📦 Publish to NuGet
     runs-on: ubuntu-latest
     permissions:
-      contents: write # releases, tags
+      packages: write
     needs:
       - release-please
       - tag-commits

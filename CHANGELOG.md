@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.4](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.2.3...v0.2.4) (2024-10-02)
+
+
+### 🐛 Bug Fixes
+
+* ignore gh packages ([cebc1a1](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/cebc1a16a97282da46cd03064af6c7dec0d0e9e1))
+
 ## [0.2.3](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.2.2...v0.2.3) (2024-10-02)
 
 

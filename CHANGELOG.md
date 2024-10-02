@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.2.1...v0.2.2) (2024-10-02)
+
+
+### 🐛 Bug Fixes
+
+* publish permissions ([492470b](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/492470b29cc54a7e2e8a642778ac34859ee37013))
+
 ## [0.2.1](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.2.0...v0.2.1) (2024-10-02)
 
 

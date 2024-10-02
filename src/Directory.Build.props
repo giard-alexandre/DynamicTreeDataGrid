@@ -19,6 +19,12 @@
   <PropertyGroup>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	<EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+
+  <!-- Deterministic Builds when on CI -->
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <!-- Add Package Icon -->
@@ -38,6 +44,4 @@
   <ItemGroup Label="PackageIcon" Condition="'$(ProjectName.EndsWith(`Test`))' == 'false'">
     <None Include="$(MSBuildThisFileDirectory)/../README.md" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
-
-  <Import Project="$(MSBuildThisFileDirectory)/SourceLink.props" />
 </Project>

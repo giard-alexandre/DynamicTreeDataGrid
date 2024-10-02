@@ -80,10 +80,10 @@ jobs:
           --api-key "${{ secrets.NUGET_API_KEY }}"
           --source https://api.nuget.org/v3/index.json
           --skip-duplicate
-      - name: 🚀 Push to Github Packages
-        run: >
-          dotnet nuget push
-          "nuget/*.nupkg"
-          --api-key ${{ secrets.GITHUB_TOKEN }}
-          --source https://nuget.pkg.github.com/DynamicTreeDataGrid/index.json
-          --skip-duplicate
+#      - name: 🚀 Push to Github Packages
+#        run: >
+#          dotnet nuget push
+#          "nuget/*.nupkg"
+#          --api-key ${{ secrets.GITHUB_TOKEN }}
+#          --source https://nuget.pkg.github.com/DynamicTreeDataGrid/index.json
+#          --skip-duplicate

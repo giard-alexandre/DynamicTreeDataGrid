@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.2.4...v0.3.0) (2024-10-02)
+
+
+### 🚀 Features
+
+* better readme ([3a4c5c6](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/3a4c5c69c9815548576937b2c120c74c21543524))
+
+
+### 🐛 Bug Fixes
+
+* gitignore ([75ceec0](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/75ceec0efc5ac2db612a14f74ecc4cf5393b4610))
+
 ## [0.2.4](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.2.3...v0.2.4) (2024-10-02)
 
 

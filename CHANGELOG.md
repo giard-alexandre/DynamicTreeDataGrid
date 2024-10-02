@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.1.0...v0.2.0) (2024-10-02)
+
+
+### 🚀 Features
+
+* add deterministic builds ([ffb5adc](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/ffb5adc7e564ee90090f79dccc8c3aae4d60dff0))
+
+
+### 🐛 Bug Fixes
+
+* rename solution ([fb1e9d5](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/fb1e9d5a3a271cfd108b859558460775a67d287d))
+
 ## [0.1.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.0.1...v0.1.0) (2024-10-01)
 
 

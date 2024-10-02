@@ -1,8 +1,22 @@
+# Dynamic Tree DataGrid
+
+![NuGet Version](https://img.shields.io/nuget/v/DynamicTreeDataGrid) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/giard-alexandre/DynamicTreeDataGrid/call-build.yml)
+
+Trying to bring some of the features of Enterprise 3rd-party WPF controls to Avalonia's vanilla 
+[TreeDataGrid](https://github.com/AvaloniaUI/Avalonia.Controls.TreeDataGrid). 
+
+
+
 > [!WARNING]
-> Package is in its very early stages.
+> Package is in its very early stages. I have no idea how this project will be affected once Avalonia releases
+> their [Avalonia Accelerate](https://github.com/AvaloniaUI/Avalonia/discussions/17149) offering since that will
+> change the license for [TreeDataGrid](https://github.com/AvaloniaUI/Avalonia.Controls.TreeDataGrid)
 
-# TODO:
+# Package Features:
 
-- Add actions workflows (see: https://github.com/AvaloniaUtils/AsyncImageLoader.Avalonia/tree/master/.github/workflows or https://github.com/AvaloniaUtils/ShowMeTheXaml.Avalonia/blob/master/.github/workflows/publish.yml)
-- Publish nuget package
-- Filtering per column
+- [x] Sort using DynamicData
+- [x] Reorder Columns
+- [x] Show/Hide Columns
+- [ ] Expose Serializable DataGrid "state" object.
+- [ ] Per-Column Filtering using DynamicData
+- [ ] Clear filters

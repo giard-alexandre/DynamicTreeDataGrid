@@ -12,6 +12,8 @@
     <PackageVersion Include="Avalonia.Diagnostics" Version="11.0.10" />
     <PackageVersion Include="Avalonia.ReactiveUI" Version="11.0.10" />
     <PackageVersion Include="Bogus" Version="35.5.1" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="DynamicData" Version="8.4.1" />
+    <PackageVersion Include="TUnit" Version="0.1.885" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Reactive.Disposables;
 using System.Reactive.Subjects;
 
 using Avalonia.Controls;
@@ -12,7 +13,7 @@ using DynamicTreeDataGrid.Models.Columns;
 namespace DynamicTreeDataGrid;
 
 public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : FlatTreeDataGridSource<TModel>,
-    IDynamicTreeDataGridSource<TModel>
+    IDynamicTreeDataGridSource<TModel>, IDisposable
     where TModel : class where TModelKey : notnull {
     // By default, the filtering function just includes all rows.
     private readonly ISubject<Func<TModel, bool>> _filterSource = new BehaviorSubject<Func<TModel, bool>>(_ => true);
@@ -20,6 +21,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : FlatTreeDataGrid
     private readonly IObservable<IComparer<TModel>> _sort;
     private readonly ISubject<IComparer<TModel>> _sortSource = new Subject<IComparer<TModel>>();
     private readonly IObservable<Func<TModel, bool>> _itemsFilter;
+    private readonly CompositeDisposable _d = new();
 
     public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes) : base([]) {
         _itemsFilter = _filterSource;
@@ -32,16 +34,17 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : FlatTreeDataGrid
         var filteredChanges = _changeSet.Filter(_itemsFilter);
         FilteredCount = filteredChanges.Count();
 
-        var myOperation = filteredChanges.Sort(_sort)
+        var disposable = filteredChanges.Sort(_sort) // Use SortAndBind?
             .Bind(out var list)
             .DisposeMany()
-            .Subscribe(set => Console.WriteLine("Changeset changed."));
+            .Subscribe();
+
+        _d.Add(disposable);
 
         Items = list;
 
         // TODO: Setup Sorted event for treeDataGridSourceImplementation?
     }
-
 
 
     public IObservable<int> FilteredCount { get; }
@@ -80,4 +83,25 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : FlatTreeDataGrid
 
         return false;
     }
+
+    #region IDisposable
+
+    private bool _disposed;
+
+    private void Dispose(bool disposing) {
+        if (_disposed || !disposing) {
+            return;
+        }
+
+        _d.Dispose();
+        _disposed = true;
+    }
+
+    public new void Dispose() {
+        Dispose(true);
+        base.Dispose();
+        GC.SuppressFinalize(this);
+    }
+
+    #endregion
 }

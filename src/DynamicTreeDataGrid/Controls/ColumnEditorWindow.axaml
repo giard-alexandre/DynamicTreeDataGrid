@@ -3,8 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:DynamicTreeDataGrid.Controls"
-        mc:Ignorable="d" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner"
+        mc:Ignorable="d" SizeToContent="Width" WindowStartupLocation="CenterOwner"
         x:Class="DynamicTreeDataGrid.Controls.ColumnEditorWindow"
-        Title="Column Editor" MinWidth="300">
+        Title="Column Editor" MinWidth="300" Height="500">
 	<controls:ColumnListView />
 </Window>

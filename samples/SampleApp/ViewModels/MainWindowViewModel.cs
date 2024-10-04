@@ -1,18 +1,29 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Reactive.Linq;
 
 using Bogus;
 using Bogus.DataSets;
 
+using DynamicData;
 using DynamicData.Binding;
 
 using DynamicTreeDataGrid;
 using DynamicTreeDataGrid.Columns;
 
+using ReactiveUI;
+
 namespace SampleApp.ViewModels;
 
-public class MainWindowViewModel : ViewModelBase {
+public class MainWindowViewModel : ReactiveObject {
 	public DynamicFlatTreeDataGridSource<Person, int> DataSource { get; set; }
+
+	private string? _filterText;
+	public string? FilterText
+	{
+		get => _filterText;
+		set => this.RaiseAndSetIfChanged(ref _filterText, value);
+	}
 
 	public MainWindowViewModel() {
 		//Set the randomizer seed if you wish to generate repeatable data sets.
@@ -27,7 +38,15 @@ public class MainWindowViewModel : ViewModelBase {
 			.RuleFor(person => person.IsChecked, faker => faker.Random.Bool())
 			.Generate(300)).ToObservableChangeSet(person => person.Id);
 
-		DataSource = new DynamicFlatTreeDataGridSource<Person, int>(data) {
+
+		var searchFilter = this.WhenValueChanged(t => t.FilterText)
+			.Throttle(TimeSpan.FromMilliseconds(500))
+			.Select(BuildSearchFilter);
+
+		var filteredData = data.Filter(searchFilter)
+			.Do(x => Console.WriteLine("NewData"));
+
+		DataSource = new DynamicFlatTreeDataGridSource<Person, int>(filteredData) {
 			Columns = {
 				new DynamicTextColumn<Person, int>("Id", "Id", person => person.Id),
 				new DynamicTextColumn<Person, string>("Name", "Name", person => person.Name),
@@ -39,6 +58,13 @@ public class MainWindowViewModel : ViewModelBase {
 				new DynamicCheckBoxColumn<Person>("Checked", "Checked", person => person.IsChecked),
 			},
 		};
+	}
+
+	private static Func<Person, bool> BuildSearchFilter(string? text) {
+		if (string.IsNullOrEmpty(text))
+			return _ => true;
+
+		return t => t.Name.Contains(text, StringComparison.OrdinalIgnoreCase);
 	}
 }
 

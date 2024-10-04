@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.3.0...v0.4.0) (2024-10-04)
+
+
+### 🚀 Features
+
+* select all ([dbc3f21](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/dbc3f21601a575544b3964218235c164e4e8d4f0))
+* show/hide all ([ce453ba](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/ce453bafb960422c4352561b599958e5b0de45c6))
+
+
+### 🐛 Bug Fixes
+
+* set editor height ([b12b8fe](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/b12b8fe53dec91319b8f9188b5b0b5faa7fcf50c))
+
 ## [0.3.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.2.4...v0.3.0) (2024-10-02)
 
 

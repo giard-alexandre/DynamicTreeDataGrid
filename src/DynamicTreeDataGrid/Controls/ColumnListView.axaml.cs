@@ -3,6 +3,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
@@ -28,6 +29,7 @@ public partial class ColumnListView : UserControl {
         if (border.DataContext is not IColumn column) return;
 
         _draggedItem = border;
+
         // Disable Hit test otherwise this control will be the drop target since the mouse is over it.
         _draggedItem.IsHitTestVisible = false;
 
@@ -44,10 +46,9 @@ public partial class ColumnListView : UserControl {
 
         // Render the item under the mouse and follow the mouse.
         var currentPosition = e.GetPosition(MainContainer);
-        var offsetX = currentPosition.X - _draggedItem.Bounds.Position.X - _draggedItem.Bounds.Width/2;
-        var offsetY = currentPosition.Y - _draggedItem.Bounds.Position.Y - _draggedItem.Bounds.Height/2;
+        var offsetX = currentPosition.X - _draggedItem.Bounds.Position.X - _draggedItem.Bounds.Width / 2;
+        var offsetY = currentPosition.Y - _draggedItem.Bounds.Position.Y - _draggedItem.Bounds.Height / 2;
         _draggedItem.RenderTransform = new TranslateTransform(offsetX, offsetY);
-
     }
 
     private void Drop(object? sender, DragEventArgs e) {
@@ -92,6 +93,23 @@ public partial class ColumnListView : UserControl {
                 column = col;
                 return true;
             }
+        }
+    }
+
+    private void ShowAllClicked(object? sender, RoutedEventArgs e) {
+        if (DataContext is not IDynamicColumns columns) return;
+
+        foreach (var column in (IReadOnlyList<IDynamicColumn>)columns) {
+            column.Visible = true;
+        }
+    }
+
+    private void HideAllClicked(object? sender, RoutedEventArgs e) {
+        if (DataContext is not IDynamicColumns columns) return;
+
+        ((IReadOnlyList<IDynamicColumn>)columns)[0].Visible = true;
+        for (int i = 1; i < ((IReadOnlyList<IDynamicColumn>)columns).Count; i++) {
+            ((IReadOnlyList<IDynamicColumn>)columns)[i].Visible = false;
         }
     }
 }

@@ -7,19 +7,33 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DynamicTreeDataGrid.Controls.ColumnListView"
              x:DataType="columns:IDynamicColumns">
-    <ScrollViewer Name="MainContainer" HorizontalAlignment="Stretch">
-        <!-- Background="Transparent" is required here in order for the DragDrop stuff to work properly. -->
-        <ItemsRepeater ItemsSource="{Binding .}" DragDrop.AllowDrop="True"
-                       Background="Transparent" Margin="10">
-            <ItemsRepeater.Layout>
-                <NonVirtualizingStackLayout />
-            </ItemsRepeater.Layout>
-            <ItemsRepeater.ItemTemplate>
-                <DataTemplate x:DataType="columns:IDynamicColumn">
-                    <controls:ColumnItemView ToolTip.Tip="{Binding Name}" Padding="5"
-                                             PointerPressed="OnPointerPressed" />
-                </DataTemplate>
-            </ItemsRepeater.ItemTemplate>
-        </ItemsRepeater>
-    </ScrollViewer>
+    <DockPanel>
+        <UniformGrid DockPanel.Dock="Top" Columns="2" Rows="1">
+            <UniformGrid.Styles>
+                <Style Selector="Button">
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="VerticalAlignment" Value="Stretch" />
+                    <Setter Property="Margin" Value="10" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
+            </UniformGrid.Styles>
+            <Button Click="ShowAllClicked">Show All</Button>
+            <Button Click="HideAllClicked">Hide All</Button>
+        </UniformGrid>
+        <ScrollViewer Name="MainContainer" HorizontalAlignment="Stretch">
+            <!-- Background="Transparent" is required here in order for the DragDrop stuff to work properly. -->
+            <ItemsRepeater ItemsSource="{Binding .}" DragDrop.AllowDrop="True"
+                           Background="Transparent" Margin="10">
+                <ItemsRepeater.Layout>
+                    <NonVirtualizingStackLayout />
+                </ItemsRepeater.Layout>
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="columns:IDynamicColumn">
+                        <controls:ColumnItemView ToolTip.Tip="{Binding Name}" Padding="5"
+                                                 PointerPressed="OnPointerPressed" />
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+        </ScrollViewer>
+    </DockPanel>
 </UserControl>

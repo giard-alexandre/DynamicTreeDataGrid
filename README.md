@@ -17,9 +17,11 @@ Trying to bring some of the features of Enterprise 3rd-party WPF controls to Ava
 - [x] Sort using DynamicData
 - [x] Reorder Columns
 - [x] Show/Hide Columns
+- [x] FlatTreeDataGid support
 - [ ] Expose Serializable DataGrid "state" object.
 - [ ] Per-Column Filtering using DynamicData
 - [ ] Clear filters
+- [ ] HierarchicalTreeDataGridSource support
 
 
 

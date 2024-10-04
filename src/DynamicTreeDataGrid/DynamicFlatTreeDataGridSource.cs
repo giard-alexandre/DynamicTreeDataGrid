@@ -1,9 +1,14 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
 using Avalonia.Controls;
+using Avalonia.Controls.Models;
 using Avalonia.Controls.Models.TreeDataGrid;
+using Avalonia.Controls.Selection;
+using Avalonia.Input;
 
 using DynamicData;
 using DynamicData.Aggregation;
@@ -12,55 +17,65 @@ using DynamicTreeDataGrid.Models.Columns;
 
 namespace DynamicTreeDataGrid;
 
-public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : FlatTreeDataGridSource<TModel>,
-    IDynamicTreeDataGridSource<TModel>, IDisposable
+public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, IDynamicTreeDataGridSource<TModel>,
+    IDisposable
     where TModel : class where TModelKey : notnull {
     // By default, the filtering function just includes all rows.
     private readonly ISubject<Func<TModel, bool>> _filterSource = new BehaviorSubject<Func<TModel, bool>>(_ => true);
     private readonly IObservable<IChangeSet<TModel, TModelKey>> _changeSet;
     private readonly IObservable<IComparer<TModel>> _sort;
-    private readonly ISubject<IComparer<TModel>> _sortSource = new Subject<IComparer<TModel>>();
+    private readonly Subject<IComparer<TModel>?> _sortSource = new ();
     private readonly IObservable<Func<TModel, bool>> _itemsFilter;
     private readonly CompositeDisposable _d = new();
+    private readonly ReadOnlyObservableCollection<TModel> _items;
 
-    public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes) : base([]) {
+    public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes) {
         _itemsFilter = _filterSource;
 
         // Use RefCount to avoid duplicate work
         _changeSet = changes.RefCount();
-        _sort = _sortSource;
         TotalCount = _changeSet.Count();
+
+        // Setup Sort notifications
+        _sort = _sortSource.Select(comparer => comparer ?? new NoSortComparer<TModel>());
+        var sortDisposable = _sort.Subscribe(comparer => {
+            // Reverse the NoSortComparer for this field from FlatTreeDataGridSource
+            _comparer = comparer is NoSortComparer<TModel> ? null : comparer;
+            Sorted?.Invoke();
+        });
 
         var filteredChanges = _changeSet.Filter(_itemsFilter);
         FilteredCount = filteredChanges.Count();
 
         var disposable = filteredChanges.Sort(_sort) // Use SortAndBind?
-            .Bind(out var list)
+            .Bind(out _items)
             .DisposeMany()
             .Subscribe();
 
+        _itemsView = TreeDataGridItemsSourceView<TModel>.GetOrCreate(_items);
+
+        // Setup Disposables
         _d.Add(disposable);
+        _d.Add(sortDisposable);
 
-        Items = list;
-
-        // TODO: Setup Sorted event for treeDataGridSourceImplementation?
+        // TODO: Fix CreateRows()? Does this now work since we set the comparer?
     }
 
 
     public IObservable<int> FilteredCount { get; }
     public IObservable<int> TotalCount { get; }
 
-    public new DynamicColumnList<TModel> Columns { get; } = [];
+    public DynamicColumnList<TModel> Columns { get; } = [];
     IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;
     IColumns ITreeDataGridSource.Columns => Columns.DisplayedColumns;
 
-    // TODO: Change to check the sort observable.
-    // public bool IsSorted => _comparer is not null;
-
-    public new event Action? Sorted;
-
-    bool ITreeDataGridSource.SortBy(IColumn? column, ListSortDirection direction) => SortBy(column, direction);
-
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="column"></param>
+    /// <param name="direction"></param>
+    /// <returns></returns>
+    /// <remarks>Slight changes to <see cref="ITreeDataGridSource.SortBy"/> but DynamicData-aware</remarks>
     public bool SortBy(IColumn? column, ListSortDirection direction) {
         if (column is IColumn<TModel> typedColumn) {
             if (!Columns.Contains(typedColumn))
@@ -73,7 +88,6 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : FlatTreeDataGrid
 
                 // Trigger a new sort notification.
                 _sortSource.OnNext(comparerInstance);
-                Sorted?.Invoke();
                 foreach (var c in Columns)
                     c.SortDirection = c == column ? direction : null;
             }
@@ -83,6 +97,100 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : FlatTreeDataGrid
 
         return false;
     }
+
+
+    #region From FlatTreeDataGrid
+
+    // private IEnumerable<TModel> _items;
+    private TreeDataGridItemsSourceView<TModel> _itemsView;
+    private AnonymousSortableRows<TModel>? _rows;
+    private IComparer<TModel>? _comparer;
+    private ITreeDataGridSelection? _selection;
+    private bool _isSelectionSet;
+
+
+    public IRows Rows => _rows ??= CreateRows();
+
+    public IEnumerable<TModel> Items => _items;
+
+    public ITreeDataGridSelection? Selection {
+        get {
+            if (_selection == null && !_isSelectionSet)
+                _selection = new TreeDataGridRowSelectionModel<TModel>(this);
+            return _selection;
+        }
+        set {
+            if (_selection != value) {
+                if (value?.Source != _items)
+                    throw new InvalidOperationException("Selection source must be set to Items.");
+                _selection = value;
+                _isSelectionSet = true;
+                RaisePropertyChanged();
+            }
+        }
+    }
+
+    IEnumerable<object> ITreeDataGridSource.Items => Items;
+
+    public ITreeDataGridCellSelectionModel<TModel>? CellSelection =>
+        Selection as ITreeDataGridCellSelectionModel<TModel>;
+
+    public ITreeDataGridRowSelectionModel<TModel>? RowSelection => Selection as ITreeDataGridRowSelectionModel<TModel>;
+    public bool IsHierarchical => false;
+    public bool IsSorted => _comparer is not null;
+
+    public event Action? Sorted;
+
+    void ITreeDataGridSource.DragDropRows(ITreeDataGridSource source,
+                                          IEnumerable<IndexPath> indexes,
+                                          IndexPath targetIndex,
+                                          TreeDataGridRowDropPosition position,
+                                          DragDropEffects effects) {
+        if (effects != DragDropEffects.Move)
+            throw new NotSupportedException("Only move is currently supported for drag/drop.");
+        if (IsSorted)
+            throw new NotSupportedException("Drag/drop is not supported on sorted data.");
+        if (position == TreeDataGridRowDropPosition.Inside)
+            throw new ArgumentException("Invalid drop position.", nameof(position));
+        if (indexes.Any(x => x.Count != 1))
+            throw new ArgumentException("Invalid source index.", nameof(indexes));
+        if (targetIndex.Count != 1)
+            throw new ArgumentException("Invalid target index.", nameof(targetIndex));
+        if (_items is not IList<TModel> items)
+            throw new InvalidOperationException("Items does not implement IList<T>.");
+
+        if (position == TreeDataGridRowDropPosition.None)
+            return;
+
+        var ti = targetIndex[0];
+
+        if (position == TreeDataGridRowDropPosition.After)
+            ++ti;
+
+        var sourceItems = new List<TModel>();
+
+        foreach (var src in indexes.OrderByDescending(x => x)) {
+            var i = src[0];
+            sourceItems.Add(items[i]);
+            items.RemoveAt(i);
+
+            if (i < ti)
+                --ti;
+        }
+
+        for (var si = sourceItems.Count - 1; si >= 0; --si) {
+            items.Insert(ti++, sourceItems[si]);
+        }
+    }
+
+    IEnumerable<object> ITreeDataGridSource.GetModelChildren(object model) { return Enumerable.Empty<object>(); }
+
+    private AnonymousSortableRows<TModel> CreateRows() {
+        return new AnonymousSortableRows<TModel>(_itemsView, _comparer);
+    }
+
+    #endregion
+
 
     #region IDisposable
 
@@ -94,12 +202,12 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : FlatTreeDataGrid
         }
 
         _d.Dispose();
+        _rows?.Dispose();
         _disposed = true;
     }
 
     public new void Dispose() {
         Dispose(true);
-        base.Dispose();
         GC.SuppressFinalize(this);
     }
 

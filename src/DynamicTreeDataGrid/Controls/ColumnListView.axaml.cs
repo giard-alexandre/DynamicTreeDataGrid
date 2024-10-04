@@ -3,6 +3,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
@@ -94,4 +95,12 @@ public partial class ColumnListView : UserControl {
             }
         }
     }
+
+    private void ShowAllClicked(object? sender, RoutedEventArgs e) {
+        if(DataContext is not IDynamicColumns columns) return;
+        // for (int i = 0; i < columns.Count; i++) {
+        //
+        // }
+    }
+    private void HideAllClicked(object? sender, RoutedEventArgs e) { throw new NotImplementedException(); }
 }

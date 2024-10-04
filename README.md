@@ -20,3 +20,26 @@ Trying to bring some of the features of Enterprise 3rd-party WPF controls to Ava
 - [ ] Expose Serializable DataGrid "state" object.
 - [ ] Per-Column Filtering using DynamicData
 - [ ] Clear filters
+
+
+
+
+## Attributions
+
+### FontAwesome
+
+This project uses icons from Font Awesome Free.
+
+Font Awesome Free License: [CC BY 4.0 License](https://creativecommons.org/licenses/by/4.0/)
+
+You can find more information about Font Awesome's licensing on their [official website](https://fontawesome.com/license/free)
+and their [project website](https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt).
+
+### Material Design Icons
+
+This project uses icons from Material Design Icons.
+
+Material Design Icons License: [Apache License 2.0](https://github.com/google/material-design-icons/blob/master/LICENSE)
+
+You can find more information about Material Design Icons on their [official website](https://developers.google.com/fonts/docs/material_icons)
+and their [project website](https://github.com/google/material-design-icons).

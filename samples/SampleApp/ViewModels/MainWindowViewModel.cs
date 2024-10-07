@@ -26,7 +26,7 @@ public class MainWindowViewModel : ReactiveObject {
 	}
 
 	public MainWindowViewModel() {
-		//Set the randomizer seed if you wish to generate repeatable data sets.
+		//Set the randomizer seed to generate repeatable data sets.
 		Randomizer.Seed = new Random(8675309);
 		var data = new ObservableCollection<Person>(new Faker<Person>()
 			.RuleFor(person => person.Id, faker => faker.IndexFaker)
@@ -43,8 +43,7 @@ public class MainWindowViewModel : ReactiveObject {
 			.Throttle(TimeSpan.FromMilliseconds(500))
 			.Select(BuildSearchFilter);
 
-		var filteredData = data.Filter(searchFilter)
-			.Do(x => Console.WriteLine("NewData"));
+		var filteredData = data.Filter(searchFilter);
 
 		DataSource = new DynamicFlatTreeDataGridSource<Person, int>(filteredData) {
 			Columns = {

@@ -48,6 +48,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
         FilteredCount = filteredChanges.Count();
 
         var disposable = filteredChanges.Sort(_sort) // Use SortAndBind?
+	        .DeferUntilLoaded()
             .Bind(out _items)
             .DisposeMany()
             .Subscribe();

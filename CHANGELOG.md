@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.4.0...v0.5.0) (2024-10-07)
+
+
+### 🚀 Features
+
+* add filtering to sample ([67086d1](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/67086d1856b5ff1a5b35a85794d073cfa0611d56))
+
+
+### 🐛 Bug Fixes
+
+* filtering crashes treedatagrid ([abe9da6](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/abe9da6ead8cad69195f96aecb5d55fb0e1b63c9))
+
 ## [0.4.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.3.0...v0.4.0) (2024-10-04)
 
 

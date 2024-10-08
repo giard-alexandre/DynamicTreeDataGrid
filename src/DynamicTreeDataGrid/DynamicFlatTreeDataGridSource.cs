@@ -22,19 +22,15 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     where TModel : class where TModelKey : notnull {
     // By default, the filtering function just includes all rows.
     private readonly ISubject<Func<TModel, bool>> _filterSource = new BehaviorSubject<Func<TModel, bool>>(_ => true);
-    private readonly IObservable<IChangeSet<TModel, TModelKey>> _changeSet;
     private readonly IObservable<IComparer<TModel>> _sort;
     private readonly Subject<IComparer<TModel>?> _sortSource = new ();
     private readonly IObservable<Func<TModel, bool>> _itemsFilter;
     private readonly CompositeDisposable _d = new();
     private readonly ReadOnlyObservableCollection<TModel> _items;
 
-    public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes) {
+    public DynamicFlatTreeDataGridSource(IObservable<ISortedChangeSet<TModel, TModelKey>> changes) {
         _itemsFilter = _filterSource;
-
-        // Use RefCount to avoid duplicate work
-        _changeSet = changes.RefCount();
-        TotalCount = _changeSet.Count();
+        TotalCount = changes.Count();
 
         // Setup Sort notifications
         _sort = _sortSource.Select(comparer => comparer ?? new NoSortComparer<TModel>());
@@ -44,11 +40,12 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
             Sorted?.Invoke();
         });
 
-        var filteredChanges = _changeSet.Filter(_itemsFilter);
+        var filteredChanges = changes.Filter(_itemsFilter);
         FilteredCount = filteredChanges.Count();
 
-        var disposable = filteredChanges.Sort(_sort) // Use SortAndBind?
+        var disposable = filteredChanges
 	        .DeferUntilLoaded()
+            .Sort(_sort) // Use SortAndBind?
             .Bind(out _items)
             .DisposeMany()
             .Subscribe();

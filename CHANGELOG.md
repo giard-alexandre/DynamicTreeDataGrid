@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.4](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.5.3...v0.5.4) (2024-10-11)
+
+
+### 🐛 Bug Fixes
+
+* nicer buttons ([bb71785](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/bb71785ffb8547f16f1f166949583cb1e1b0444c))
+
 ## [0.5.3](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.5.2...v0.5.3) (2024-10-11)
 
 

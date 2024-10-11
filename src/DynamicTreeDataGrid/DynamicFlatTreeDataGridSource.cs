@@ -16,6 +16,7 @@ using DynamicData;
 using DynamicData.Aggregation;
 
 using DynamicTreeDataGrid.Models.Columns;
+using DynamicTreeDataGrid.State;
 
 namespace DynamicTreeDataGrid;
 
@@ -29,6 +30,9 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     private readonly IObservable<Func<TModel, bool>> _itemsFilter;
     private readonly CompositeDisposable _d = new();
     private readonly ReadOnlyObservableCollection<TModel> _items;
+
+    public IObservable<int> FilteredCount { get; }
+    public IObservable<int> TotalCount { get; }
 
     public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes, IScheduler mainThreadScheduler) {
         _itemsFilter = _filterSource;
@@ -62,9 +66,15 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
         // TODO: Fix CreateRows()? Does this now work since we set the comparer?
     }
 
+    public IEnumerable<ColumnState> GetColumnStates() {
+	    IList<ColumnState> states = [];
+	    for (var i = 0; i < Columns.Count; i++) {
+		    var column = Columns[i];
+		    states.Add(new ColumnState(column.Name) { Visible = column.Visible, Index = i, });
+	    }
+	    return states;
+    }
 
-    public IObservable<int> FilteredCount { get; }
-    public IObservable<int> TotalCount { get; }
 
     public DynamicColumnList<TModel> Columns { get; } = [];
     IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;

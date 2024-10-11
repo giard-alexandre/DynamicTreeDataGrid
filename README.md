@@ -1,6 +1,7 @@
 # Dynamic Tree DataGrid
 
-[![NuGet Version](https://img.shields.io/nuget/v/DynamicTreeDataGrid)](https://www.nuget.org/packages/DynamicTreeDataGrid/latest) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/giard-alexandre/DynamicTreeDataGrid/call-build.yml)
+[![NuGet Version](https://img.shields.io/nuget/v/DynamicTreeDataGrid)](https://www.nuget.org/packages/DynamicTreeDataGrid/latest)
+![example workflow](https://github.com/giard-alexandre/DynamicTreeDataGrid/actions/workflows/call-build.yml/badge.svg)
 
 Trying to bring some of the features of Enterprise 3rd-party WPF controls to Avalonia's vanilla
 [TreeDataGrid](https://github.com/AvaloniaUI/Avalonia.Controls.TreeDataGrid).

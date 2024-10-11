@@ -1,6 +1,8 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 
+using DynamicTreeDataGrid.State;
+
 namespace DynamicTreeDataGrid.Models.Columns;
 
 /// <summary>
@@ -36,6 +38,25 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
         var item = base[oldIndex];
         base.RemoveItem(oldIndex);
         base.InsertItem(newIndex, item);
+    }
+
+    public bool ApplyColumnStates(IEnumerable<ColumnState> states) {
+	    try
+	    {
+		    var intersections = this.Items.Join(states, dc => dc.Name, cs => cs.Name,
+			    (dynamicColumn, state) => (column: dynamicColumn, state));
+
+		    foreach (var (column, state) in intersections) {
+			    var oldIndex = IndexOf(column);
+			    this.Move(oldIndex, state.Index);
+		    }
+
+		    return true;
+	    }
+	    catch (Exception e) {
+		    Console.WriteLine(e);
+		    return false;
+	    }
     }
 
     private void SyncFilteredCollection(object? sender, NotifyCollectionChangedEventArgs e) {

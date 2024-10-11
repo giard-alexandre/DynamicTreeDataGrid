@@ -48,6 +48,7 @@ public class DynamicHierarchicalTreeDataGridSource<TModel, TModelKey> : Hierarch
     public IObservable<int> TotalCount { get; }
 
     public IEnumerable<ColumnState> GetColumnStates() => throw new NotImplementedException();
+    public bool ApplyColumnStates(IEnumerable<ColumnState> states) => throw new NotImplementedException();
 
 
     public new DynamicColumnList<TModel> Columns { get; } = [];

@@ -10,7 +10,6 @@ using Avalonia.Controls.Models;
 using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Controls.Selection;
 using Avalonia.Input;
-using Avalonia.Threading;
 
 using DynamicData;
 using DynamicData.Aggregation;
@@ -74,6 +73,8 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
 	    }
 	    return states;
     }
+
+    public bool ApplyColumnStates(IEnumerable<ColumnState> states) => Columns.ApplyColumnStates(states);
 
 
     public DynamicColumnList<TModel> Columns { get; } = [];

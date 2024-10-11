@@ -126,6 +126,9 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
             var offset = GetDisplayedOffset(index);
             _displayedColumns.Insert(index - offset, column);
         }
+        else if (_displayedColumns.Count <= 1) {
+	        column.Visible = true;
+        }
         else {
             _displayedColumns.Remove(column);
         }

@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.2](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.5.1...v0.5.2) (2024-10-11)
+
+
+### 🐛 Bug Fixes
+
+* add nuget link ([0cfb700](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/0cfb700b112ee2982907207bf30a2d755e144468))
+* github badge ([46d250f](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/46d250fc66a6bb04823c9c340e00b542fbc89dc4))
+
 ## [0.5.1](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.5.0...v0.5.1) (2024-10-11)
 
 

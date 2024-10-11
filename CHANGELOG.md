@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.5.0...v0.5.1) (2024-10-11)
+
+
+### 🐛 Bug Fixes
+
+* add scheduler to fix binding issues ([21633bf](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/21633bf02943eec124de91d86f6f76fc26ec173d))
+
 ## [0.5.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.4.0...v0.5.0) (2024-10-07)
 
 

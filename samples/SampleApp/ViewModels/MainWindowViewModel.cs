@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
+using System.Text.Json;
 
 using Bogus;
 using Bogus.DataSets;
@@ -19,8 +20,8 @@ public class MainWindowViewModel : ReactiveObject {
 	public DynamicFlatTreeDataGridSource<Person, int> DataSource { get; set; }
 
 	private string? _filterText;
-	public string? FilterText
-	{
+
+	public string? FilterText {
 		get => _filterText;
 		set => this.RaiseAndSetIfChanged(ref _filterText, value);
 	}
@@ -57,6 +58,11 @@ public class MainWindowViewModel : ReactiveObject {
 				new DynamicCheckBoxColumn<Person>("Checked", "Checked", person => person.IsChecked),
 			},
 		};
+	}
+
+	public void PrintColumnStates() {
+		Console.WriteLine(JsonSerializer.Serialize(DataSource.GetColumnStates(),
+			new JsonSerializerOptions(JsonSerializerOptions.Default) { WriteIndented = true }));
 	}
 
 	private static Func<Person, bool> BuildSearchFilter(string? text) {

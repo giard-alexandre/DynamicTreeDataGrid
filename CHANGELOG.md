@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.3](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.5.2...v0.5.3) (2024-10-11)
+
+
+### 🐛 Bug Fixes
+
+* always show one column ([c4a304b](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/c4a304bc24a066f29e652fa920d4b3baff36c9a2))
+
 ## [0.5.2](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.5.1...v0.5.2) (2024-10-11)
 
 

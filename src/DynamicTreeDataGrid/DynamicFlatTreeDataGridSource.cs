@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -9,6 +10,7 @@ using Avalonia.Controls.Models;
 using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Controls.Selection;
 using Avalonia.Input;
+using Avalonia.Threading;
 
 using DynamicData;
 using DynamicData.Aggregation;
@@ -28,7 +30,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     private readonly CompositeDisposable _d = new();
     private readonly ReadOnlyObservableCollection<TModel> _items;
 
-    public DynamicFlatTreeDataGridSource(IObservable<ISortedChangeSet<TModel, TModelKey>> changes) {
+    public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes, IScheduler mainThreadScheduler) {
         _itemsFilter = _filterSource;
         TotalCount = changes.Count();
 
@@ -46,6 +48,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
         var disposable = filteredChanges
 	        .DeferUntilLoaded()
             .Sort(_sort) // Use SortAndBind?
+	        .ObserveOn(mainThreadScheduler)
             .Bind(out _items)
             .DisposeMany()
             .Subscribe();

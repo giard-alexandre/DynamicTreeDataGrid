@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.5.4...v0.6.0) (2024-10-12)
+
+
+### 🚀 Features
+
+* initial tests scaffold ([090bdeb](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/090bdeb316825d72a82ce521c0a0e618441a6378))
+
 ## [0.5.4](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.5.3...v0.5.4) (2024-10-11)
 
 

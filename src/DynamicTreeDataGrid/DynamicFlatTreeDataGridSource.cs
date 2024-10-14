@@ -14,6 +14,7 @@ using Avalonia.Input;
 using DynamicData;
 using DynamicData.Aggregation;
 
+using DynamicTreeDataGrid.Columns;
 using DynamicTreeDataGrid.Models.Columns;
 using DynamicTreeDataGrid.State;
 

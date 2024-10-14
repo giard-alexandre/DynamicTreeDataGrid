@@ -7,6 +7,7 @@ using Avalonia.Controls.Models.TreeDataGrid;
 using DynamicData;
 using DynamicData.Aggregation;
 
+using DynamicTreeDataGrid.Columns;
 using DynamicTreeDataGrid.Models.Columns;
 using DynamicTreeDataGrid.State;
 

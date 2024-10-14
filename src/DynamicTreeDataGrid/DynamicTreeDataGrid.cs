@@ -22,6 +22,9 @@ public class DynamicTreeDataGrid : TreeDataGrid {
     public void ShowColumnEditor() {
         var columnsWindow = new ColumnEditorWindow { DataContext = Source?.Columns };
         var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is Window window) columnsWindow.ShowDialog(window);
+        if (topLevel is not Window window) return;
+
+        columnsWindow.RequestedThemeVariant = topLevel.RequestedThemeVariant;
+        columnsWindow.ShowDialog(window);
     }
 }

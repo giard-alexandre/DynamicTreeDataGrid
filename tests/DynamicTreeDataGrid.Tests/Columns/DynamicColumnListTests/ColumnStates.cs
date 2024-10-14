@@ -12,7 +12,7 @@ public class ColumnStates {
     private readonly List<ColumnState> _loadedStates = [
         new("Id") { Index = 2, Visible = true },
         new("Name") { Index = 0, Visible = true },
-        new("Date-of-Birth") { Index = 1, Visible = true },
+        new("Date-of-Birth") { Index = 1, Visible = false },
     ];
 
     [Before(Test)]
@@ -44,8 +44,17 @@ public class ColumnStates {
     [Test]
     public async Task GetColumnStates_ReturnsAllStates() {
         var result = _list.GetColumnStates();
+        IList<ColumnState> expected = [
+            new("Id") { Index = 0, Visible = true },
+            new("Name") { Index = 1, Visible = true },
+            new("Date-of-Birth") { Index = 2, Visible = true },
+        ];
 
         // Check that all items are in the right order and visible
-        await Assert.That(result.Count()).IsEqualTo(3);
+        await Assert.That(result.Count()).IsNotNull()
+            .And. IsPositive()
+            .And.IsEqualTo(3);
+
+        await Assert.That(result).IsEquivalentCollectionTo(expected);
     }
 }

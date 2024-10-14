@@ -16,7 +16,6 @@ using DynamicData.Aggregation;
 
 using DynamicTreeDataGrid.Columns;
 using DynamicTreeDataGrid.Models.Columns;
-using DynamicTreeDataGrid.State;
 
 namespace DynamicTreeDataGrid;
 
@@ -65,18 +64,6 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
 
         // TODO: Fix CreateRows()? Does this now work since we set the comparer?
     }
-
-    public IEnumerable<ColumnState> GetColumnStates() {
-	    IList<ColumnState> states = [];
-	    for (var i = 0; i < Columns.Count; i++) {
-		    var column = Columns[i];
-		    states.Add(new ColumnState(column.Name) { Visible = column.Visible, Index = i, });
-	    }
-	    return states;
-    }
-
-    public bool ApplyColumnStates(IEnumerable<ColumnState> states) => Columns.ApplyColumnStates(states);
-
 
     public DynamicColumnList<TModel> Columns { get; } = [];
     IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;

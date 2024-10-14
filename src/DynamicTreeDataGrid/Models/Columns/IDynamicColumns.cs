@@ -14,4 +14,10 @@ public interface IDynamicColumns : IDynamicColumnsBase {
 	/// <returns><c>true</c> if applied successfully, <c>false</c> if any errors occurred.</returns>
 	bool ApplyColumnStates(IEnumerable<ColumnState> states);
 
+	/// <summary>
+	/// Get the current <see cref="ColumnState"/> list of the collection.
+	/// </summary>
+	/// <returns>The current collection of <see cref="ColumnState"/>s</returns>
+	IEnumerable<ColumnState> GetColumnStates();
+
 }

@@ -12,7 +12,8 @@ using ReactiveUI.Testing;
 
 namespace DynamicTreeDataGrid.Tests.DynamicFlatTreeDataGridSource;
 
-public class ColumnStates {
+public class Initialization {
+    private const int ItemCount = 300;
     private DynamicFlatTreeDataGridSource<TestPerson, int> _source;
 
     private readonly TestScheduler _scheduler = new();
@@ -23,7 +24,7 @@ public class ColumnStates {
         Randomizer.Seed = new Random(8675309);
         var fakeData = new Faker<TestPerson>()
             .CustomInstantiator(f => new TestPerson(f.IndexFaker, f.Name.FullName(), f.Person.DateOfBirth))
-            .Generate(300);
+            .Generate(ItemCount);
         var data = new ObservableCollection<TestPerson>(fakeData).ToObservableChangeSet(person => person.Id);
 
 
@@ -44,15 +45,13 @@ public class ColumnStates {
     }
 
     [Test]
-    public async Task MyTest() {
+    public async Task Constructor_ChangeSet_PopulatesItems() {
         await _scheduler.WithAsync(async testScheduler => {
             // Tick once to get ChangeSet data
             testScheduler.AdvanceBy(1);
-            await Assert.That(_source.Columns.Count).IsEqualTo(3);
+            await Assert.That(_source.Items.Count).IsEqualTo(ItemCount);
 
         });
 
     }
 }
-
-internal record TestPerson(int Id = 0, string Name = "", DateTime DateOfBirth = new());

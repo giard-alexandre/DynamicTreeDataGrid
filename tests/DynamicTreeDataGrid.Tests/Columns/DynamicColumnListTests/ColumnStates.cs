@@ -9,12 +9,6 @@ public class ColumnStates {
     private readonly TestScheduler _scheduler = new();
     private readonly DynamicColumnList<TestPerson> _list = [];
 
-    private readonly List<ColumnState> _loadedStates = [
-        new("Id") { Index = 2, Visible = true },
-        new("Name") { Index = 0, Visible = true },
-        new("Date-of-Birth") { Index = 1, Visible = false },
-    ];
-
     [Before(Test)]
     public async Task Setup() {
         await Task.CompletedTask;
@@ -56,5 +50,24 @@ public class ColumnStates {
             .And.IsEqualTo(3);
 
         await Assert.That(result).IsEquivalentCollectionTo(expected);
+    }
+
+    [Test]
+    public async Task ApplyColumnStates_WithFullValidStates_AppliesProperly() {
+        List<ColumnState> loadedStates = [
+            new("Id") { Index = 2, Visible = true },
+            new("Name") { Index = 0, Visible = true },
+            new("Date-of-Birth") { Index = 1, Visible = false },
+        ];
+        var result = _list.ApplyColumnStates(loadedStates);
+
+        // Check that all items are in the right order and visible
+        await Assert.That(_list[0]).IsNotNull();
+        await Assert.That(_list[0].Name).IsEqualTo("Name");
+        await Assert.That(_list[0].Visible).IsEqualTo(true);
+        await Assert.That(_list[1].Name).IsEqualTo("Date-of-Birth");
+        await Assert.That(_list[1].Visible).IsEqualTo(false);
+        await Assert.That(_list[2].Name).IsEqualTo("Id");
+        await Assert.That(_list[2].Visible).IsEqualTo(true);
     }
 }

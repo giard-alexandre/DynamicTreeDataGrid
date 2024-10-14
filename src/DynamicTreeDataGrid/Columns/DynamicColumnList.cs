@@ -54,12 +54,13 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
 	    try
 	    {
 		    var intersections = this.Items.Join(states, dc => dc.Name, cs => cs.Name,
-			    (dynamicColumn, state) => (column: dynamicColumn, state));
+			    (dynamicColumn, state) => (column: dynamicColumn, state)).ToList();
 
 		    foreach (var (column, state) in intersections) {
 			    var oldIndex = IndexOf(column);
 			    this.Move(oldIndex, state.Index);
-		    }
+                column.Visible = state.Visible;
+            }
 
 		    return true;
 	    }

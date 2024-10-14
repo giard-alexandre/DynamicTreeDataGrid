@@ -61,7 +61,7 @@ public class MainWindowViewModel : ReactiveObject {
 	}
 
 	public void PrintColumnStates() {
-		Console.WriteLine(JsonSerializer.Serialize(DataSource.GetColumnStates(),
+		Console.WriteLine(JsonSerializer.Serialize(DataSource.Columns.GetColumnStates(),
 			new JsonSerializerOptions(JsonSerializerOptions.Default) { WriteIndented = true }));
 	}
 

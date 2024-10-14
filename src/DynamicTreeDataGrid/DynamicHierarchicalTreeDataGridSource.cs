@@ -16,12 +16,13 @@ namespace DynamicTreeDataGrid;
 public class DynamicHierarchicalTreeDataGridSource<TModel, TModelKey> : HierarchicalTreeDataGridSource<TModel>,
     IDynamicTreeDataGridSource<TModel>
     where TModel : class where TModelKey : notnull {
+    private readonly IObservable<IChangeSet<TModel, TModelKey>> _changeSet;
+
     // By default, the filtering function just includes all rows.
     private readonly ISubject<Func<TModel, bool>> _filterSource = new BehaviorSubject<Func<TModel, bool>>(_ => true);
-    private readonly IObservable<IChangeSet<TModel, TModelKey>> _changeSet;
+    private readonly IObservable<Func<TModel, bool>> _itemsFilter;
     private readonly IObservable<IComparer<TModel>> _sort;
     private readonly ISubject<IComparer<TModel>> _sortSource = new Subject<IComparer<TModel>>();
-    private readonly IObservable<Func<TModel, bool>> _itemsFilter;
 
     public DynamicHierarchicalTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes) : base([]) {
         _itemsFilter = _filterSource;
@@ -44,10 +45,10 @@ public class DynamicHierarchicalTreeDataGridSource<TModel, TModelKey> : Hierarch
         // TODO: Setup Sorted event for treeDataGridSourceImplementation?
     }
 
+    public new DynamicColumnList<TModel> Columns { get; } = [];
+
     public IObservable<int> FilteredCount { get; }
     public IObservable<int> TotalCount { get; }
-
-    public new DynamicColumnList<TModel> Columns { get; } = [];
     IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;
     IColumns ITreeDataGridSource.Columns => Columns.DisplayedColumns;
 
@@ -86,7 +87,7 @@ public class DynamicHierarchicalTreeDataGridSource<TModel, TModelKey> : Hierarch
             Sort(comparison);
             Sorted?.Invoke();
             foreach (var c in Columns)
-                c.SortDirection = c == column ? (ListSortDirection?)direction : null;
+                c.SortDirection = c == column ? direction : null;
             return true;
         }
 

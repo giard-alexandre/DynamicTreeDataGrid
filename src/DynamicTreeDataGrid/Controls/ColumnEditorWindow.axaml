@@ -6,5 +6,5 @@
         mc:Ignorable="d" SizeToContent="Width" WindowStartupLocation="CenterOwner"
         x:Class="DynamicTreeDataGrid.Controls.ColumnEditorWindow"
         Title="Column Editor" MinWidth="300" Height="500">
-	<controls:ColumnListView />
+    <controls:ColumnListView />
 </Window>

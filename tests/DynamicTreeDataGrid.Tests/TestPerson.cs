@@ -1,7 +1,7 @@
 ﻿namespace DynamicTreeDataGrid.Tests;
 
 /// <summary>
-/// Test Person used for testing purposes.
+///     Test Person used for testing purposes.
 /// </summary>
 /// <param name="Id"></param>
 /// <param name="Name"></param>

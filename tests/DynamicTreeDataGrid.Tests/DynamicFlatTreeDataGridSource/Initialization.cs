@@ -14,9 +14,9 @@ namespace DynamicTreeDataGrid.Tests.DynamicFlatTreeDataGridSource;
 
 public class Initialization {
     private const int ItemCount = 300;
-    private DynamicFlatTreeDataGridSource<TestPerson, int> _source;
 
     private readonly TestScheduler _scheduler = new();
+    private DynamicFlatTreeDataGridSource<TestPerson, int> _source;
 
     [Before(Test)]
     public async Task Setup() {
@@ -30,9 +30,9 @@ public class Initialization {
 
         _source = new DynamicFlatTreeDataGridSource<TestPerson, int>(data, _scheduler) {
             Columns = {
-                new DynamicTextColumn<TestPerson,int>("Id", "Id", person => person.Id),
-                new DynamicTextColumn<TestPerson,string>("Name", "Name", person => person.Name),
-                new DynamicTextColumn<TestPerson,DateTime>("Date-of-Birth", "DoB", person => person.DateOfBirth),
+                new DynamicTextColumn<TestPerson, int>("Id", "Id", person => person.Id),
+                new DynamicTextColumn<TestPerson, string>("Name", "Name", person => person.Name),
+                new DynamicTextColumn<TestPerson, DateTime>("Date-of-Birth", "DoB", person => person.DateOfBirth),
             },
         };
         await Task.CompletedTask;
@@ -50,8 +50,6 @@ public class Initialization {
             // Tick once to get ChangeSet data
             testScheduler.AdvanceBy(1);
             await Assert.That(_source.Items.Count).IsEqualTo(ItemCount);
-
         });
-
     }
 }

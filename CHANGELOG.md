@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.6.0...v0.6.1) (2024-10-14)
+
+
+### 🐛 Bug Fixes
+
+* pass theme to modal ([bf916b2](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/bf916b2e3b2437df0a7096e28dbb1498cf40c737))
+
 ## [0.6.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.5.4...v0.6.0) (2024-10-14)
 
 

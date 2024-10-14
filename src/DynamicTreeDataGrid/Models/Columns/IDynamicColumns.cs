@@ -18,6 +18,6 @@ public interface IDynamicColumns : IDynamicColumnsBase {
 	/// Get the current <see cref="ColumnState"/> list of the collection.
 	/// </summary>
 	/// <returns>The current collection of <see cref="ColumnState"/>s</returns>
-	IEnumerable<ColumnState> GetColumnStates();
+	IList<ColumnState> GetColumnStates();
 
 }

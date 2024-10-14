@@ -41,7 +41,7 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
         base.InsertItem(newIndex, item);
     }
 
-    public IEnumerable<ColumnState> GetColumnStates() {
+    public IList<ColumnState> GetColumnStates() {
         IList<ColumnState> states = [];
         for (var i = 0; i < Count; i++) {
             var column = this[i];

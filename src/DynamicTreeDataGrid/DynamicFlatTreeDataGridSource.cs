@@ -22,18 +22,17 @@ namespace DynamicTreeDataGrid;
 public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, IDynamicTreeDataGridSource<TModel>,
     IDisposable
     where TModel : class where TModelKey : notnull {
+    private readonly CompositeDisposable _d = new();
+
     // By default, the filtering function just includes all rows.
     private readonly ISubject<Func<TModel, bool>> _filterSource = new BehaviorSubject<Func<TModel, bool>>(_ => true);
-    private readonly IObservable<IComparer<TModel>> _sort;
-    private readonly Subject<IComparer<TModel>?> _sortSource = new ();
-    private readonly IObservable<Func<TModel, bool>> _itemsFilter;
-    private readonly CompositeDisposable _d = new();
     private readonly ReadOnlyObservableCollection<TModel> _items;
+    private readonly IObservable<Func<TModel, bool>> _itemsFilter;
+    private readonly IObservable<IComparer<TModel>> _sort;
+    private readonly Subject<IComparer<TModel>?> _sortSource = new();
 
-    public IObservable<int> FilteredCount { get; }
-    public IObservable<int> TotalCount { get; }
-
-    public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes, IScheduler mainThreadScheduler) {
+    public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes,
+                                         IScheduler mainThreadScheduler) {
         _itemsFilter = _filterSource;
         TotalCount = changes.Count();
 
@@ -48,10 +47,9 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
         var filteredChanges = changes.Filter(_itemsFilter);
         FilteredCount = filteredChanges.Count();
 
-        var disposable = filteredChanges
-	        .DeferUntilLoaded()
+        var disposable = filteredChanges.DeferUntilLoaded()
             .Sort(_sort) // Use SortAndBind?
-	        .ObserveOn(mainThreadScheduler)
+            .ObserveOn(mainThreadScheduler)
             .Bind(out _items)
             .DisposeMany()
             .Subscribe();
@@ -66,16 +64,18 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     }
 
     public DynamicColumnList<TModel> Columns { get; } = [];
+
+    public IObservable<int> FilteredCount { get; }
+    public IObservable<int> TotalCount { get; }
     IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;
     IColumns ITreeDataGridSource.Columns => Columns.DisplayedColumns;
 
     /// <summary>
-    ///
     /// </summary>
     /// <param name="column"></param>
     /// <param name="direction"></param>
     /// <returns></returns>
-    /// <remarks>Slight changes to <see cref="ITreeDataGridSource.SortBy"/> but DynamicData-aware</remarks>
+    /// <remarks>Slight changes to <see cref="ITreeDataGridSource.SortBy" /> but DynamicData-aware</remarks>
     public bool SortBy(IColumn? column, ListSortDirection direction) {
         if (column is IColumn<TModel> typedColumn) {
             if (!Columns.Contains(typedColumn))
@@ -102,7 +102,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     #region From FlatTreeDataGrid
 
     // private IEnumerable<TModel> _items;
-    private TreeDataGridItemsSourceView<TModel> _itemsView;
+    private readonly TreeDataGridItemsSourceView<TModel> _itemsView;
     private AnonymousSortableRows<TModel>? _rows;
     private IComparer<TModel>? _comparer;
     private ITreeDataGridSelection? _selection;
@@ -178,16 +178,12 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
                 --ti;
         }
 
-        for (var si = sourceItems.Count - 1; si >= 0; --si) {
-            items.Insert(ti++, sourceItems[si]);
-        }
+        for (var si = sourceItems.Count - 1; si >= 0; --si) items.Insert(ti++, sourceItems[si]);
     }
 
-    IEnumerable<object> ITreeDataGridSource.GetModelChildren(object model) { return Enumerable.Empty<object>(); }
+    IEnumerable<object> ITreeDataGridSource.GetModelChildren(object model) => Enumerable.Empty<object>();
 
-    private AnonymousSortableRows<TModel> CreateRows() {
-        return new AnonymousSortableRows<TModel>(_itemsView, _comparer);
-    }
+    private AnonymousSortableRows<TModel> CreateRows() => new(_itemsView, _comparer);
 
     #endregion
 
@@ -197,16 +193,14 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     private bool _disposed;
 
     private void Dispose(bool disposing) {
-        if (_disposed || !disposing) {
-            return;
-        }
+        if (_disposed || !disposing) return;
 
         _d.Dispose();
         _rows?.Dispose();
         _disposed = true;
     }
 
-    public new void Dispose() {
+    public void Dispose() {
         Dispose(true);
         GC.SuppressFinalize(this);
     }

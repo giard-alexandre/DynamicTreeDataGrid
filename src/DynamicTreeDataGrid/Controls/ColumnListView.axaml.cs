@@ -72,9 +72,7 @@ public partial class ColumnListView : UserControl {
         }
 
         // Move the item in the collection
-        if (DataContext is IDynamicColumns collection) {
-            collection.Move(sourceColumn, targetColumn);
-        }
+        if (DataContext is IDynamicColumns collection) collection.Move(sourceColumn, targetColumn);
     }
 
     private static bool TryGetColumn(Control? control, [MaybeNullWhen(false)] out IDynamicColumn column) {
@@ -99,17 +97,14 @@ public partial class ColumnListView : UserControl {
     private void ShowAllClicked(object? sender, RoutedEventArgs e) {
         if (DataContext is not IDynamicColumns columns) return;
 
-        foreach (var column in (IReadOnlyList<IDynamicColumn>)columns) {
-            column.Visible = true;
-        }
+        foreach (var column in (IReadOnlyList<IDynamicColumn>)columns) column.Visible = true;
     }
 
     private void HideAllClicked(object? sender, RoutedEventArgs e) {
         if (DataContext is not IDynamicColumns columns) return;
 
         ((IReadOnlyList<IDynamicColumn>)columns)[0].Visible = true;
-        for (int i = 1; i < ((IReadOnlyList<IDynamicColumn>)columns).Count; i++) {
+        for (var i = 1; i < ((IReadOnlyList<IDynamicColumn>)columns).Count; i++)
             ((IReadOnlyList<IDynamicColumn>)columns)[i].Visible = false;
-        }
     }
 }

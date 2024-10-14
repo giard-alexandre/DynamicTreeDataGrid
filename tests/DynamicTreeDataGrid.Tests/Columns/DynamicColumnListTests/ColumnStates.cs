@@ -6,12 +6,13 @@ using Microsoft.Reactive.Testing;
 namespace DynamicTreeDataGrid.Tests.Columns.DynamicColumnListTests;
 
 public class ColumnStates {
-    private readonly TestScheduler _scheduler = new();
     private readonly DynamicColumnList<TestPerson> _list = [];
+    private readonly TestScheduler _scheduler = new();
 
     [Before(Test)]
     public async Task Setup() {
         await Task.CompletedTask;
+
         // Build the collection with specific indexes
         _list.Insert(0, new DynamicTextColumn<TestPerson, int>("Id", "Id", person => person.Id));
         _list.Insert(1, new DynamicTextColumn<TestPerson, string>("Name", "Name", person => person.Name));
@@ -45,9 +46,7 @@ public class ColumnStates {
         ];
 
         // Check that all items are in the right order and visible
-        await Assert.That(result.Count()).IsNotNull()
-            .And. IsPositive()
-            .And.IsEqualTo(3);
+        await Assert.That(result.Count()).IsNotNull().And.IsPositive().And.IsEqualTo(3);
 
         await Assert.That(result).IsEquivalentCollectionTo(expected);
     }

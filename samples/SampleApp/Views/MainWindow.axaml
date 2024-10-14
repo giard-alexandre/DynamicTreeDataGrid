@@ -10,24 +10,25 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="SampleApp">
 
-	<Design.DataContext>
-		<!-- This only sets the DataContext for the previewer in an IDE,
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-		<viewModels:MainWindowViewModel />
-	</Design.DataContext>
+        <viewModels:MainWindowViewModel />
+    </Design.DataContext>
 
-	<DockPanel>
-		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-			<Label Target="FilterTextBox">Filter Name: </Label>
-			<TextBox Name="FilterTextBox" Text="{Binding FilterText}" Width="200" />
-			<Button Content="Print Column States To Console" Command="{Binding PrintColumnStates}" />
-		</StackPanel>
-		<dynamicTreeDataGrid:DynamicTreeDataGrid Source="{Binding DataSource}">
-			<TreeDataGrid.Resources>
-				<DataTemplate x:Key="HeightCell" DataType="{x:Type viewModels:Person}">
-					<TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Height, StringFormat={}{0:0.0}}"/>
-				</DataTemplate>
-			</TreeDataGrid.Resources>
-		</dynamicTreeDataGrid:DynamicTreeDataGrid>
-	</DockPanel>
+    <DockPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Label Target="FilterTextBox">Filter Name: </Label>
+            <TextBox Name="FilterTextBox" Text="{Binding FilterText}" Width="200" />
+            <Button Content="Print Column States To Console" Command="{Binding PrintColumnStates}" />
+        </StackPanel>
+        <dynamicTreeDataGrid:DynamicTreeDataGrid Source="{Binding DataSource}">
+            <TreeDataGrid.Resources>
+                <DataTemplate x:Key="HeightCell" DataType="{x:Type viewModels:Person}">
+                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                               Text="{Binding Height, StringFormat={}{0:0.0}}" />
+                </DataTemplate>
+            </TreeDataGrid.Resources>
+        </dynamicTreeDataGrid:DynamicTreeDataGrid>
+    </DockPanel>
 </Window>

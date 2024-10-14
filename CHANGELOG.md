@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.6.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.5.4...v0.6.0) (2024-10-14)
+
+
+### 🚀 Features
+
+* add column state ([bbb533f](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/bbb533f4458b20c092b412c517d275100077753c))
+* add datasource to colstate test ([5f8fe43](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/5f8fe432b2406c69f8dcd6547c1ffb94c2784cbb))
+* apply column states ([c1a64cc](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/c1a64cc3a4d6618c7e97bed91d846a3095a98eaa))
+* **columnlist:** add applycolumnstate test ([4bb62b0](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/4bb62b04ad5f6ce553aa854385cce4373ad7635b))
+* **columnstate:** apply partial test ([4fbdea8](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/4fbdea84005b033194b3cf74ecfeef61ad1e15bf))
+* **columnstate:** scaffold tests ([460ad81](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/460ad81f934985f4adc6b1d09c68f3a3a589fd2d))
+* **columnstate:** test default value ([241e115](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/241e115c9c0b93509fc66e9e260eda14f1cc5baa))
+* **IDynamicColumns:** expose list ([97334b6](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/97334b6d058369e7e4a9cb6abe1ab35c730eeeef))
+* initial tests scaffold ([090bdeb](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/090bdeb316825d72a82ce521c0a0e618441a6378))
+* inline column states into collection ([e7c39c3](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/e7c39c39305f06f7dc858f683312c766431617e8))
+* partial state tests w/ same index ([ce24c55](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/ce24c559092491e573ce0d37592c7d3dcc349387))
+* **sample:** print column states ([eb93d53](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/eb93d53013d0c931c24bb1aba37bb9cfcc8efd22))
+
+
+### 🐛 Bug Fixes
+
+* call to GetColumnStates ([d259470](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/d259470a22a8007acfc243434d9823a8ffa73a01))
+
 ## [0.5.4](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.5.3...v0.5.4) (2024-10-11)
 
 

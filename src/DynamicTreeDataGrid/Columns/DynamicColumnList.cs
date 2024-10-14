@@ -1,7 +1,10 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-namespace DynamicTreeDataGrid.Models.Columns;
+using DynamicTreeDataGrid.Models.Columns;
+using DynamicTreeDataGrid.State;
+
+namespace DynamicTreeDataGrid.Columns;
 
 /// <summary>
 /// Maintains 2 lists of columns. The main one, which is exposed by default, is the list of all columns
@@ -36,6 +39,35 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
         var item = base[oldIndex];
         base.RemoveItem(oldIndex);
         base.InsertItem(newIndex, item);
+    }
+
+    public IList<ColumnState> GetColumnStates() {
+        IList<ColumnState> states = [];
+        for (var i = 0; i < Count; i++) {
+            var column = this[i];
+            states.Add(new ColumnState(column.Name) { Visible = column.Visible, Index = i, });
+        }
+        return states;
+    }
+
+    public bool ApplyColumnStates(IEnumerable<ColumnState> states) {
+	    try
+	    {
+		    var intersections = this.Items.Join(states, dc => dc.Name, cs => cs.Name,
+			    (dynamicColumn, state) => (column: dynamicColumn, state)).ToList();
+
+		    foreach (var (column, state) in intersections) {
+			    var oldIndex = IndexOf(column);
+			    this.Move(oldIndex, state.Index);
+                column.Visible = state.Visible;
+            }
+
+		    return true;
+	    }
+	    catch (Exception e) {
+		    Console.WriteLine(e);
+		    return false;
+	    }
     }
 
     private void SyncFilteredCollection(object? sender, NotifyCollectionChangedEventArgs e) {

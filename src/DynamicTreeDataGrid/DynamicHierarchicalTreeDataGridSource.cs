@@ -7,6 +7,7 @@ using Avalonia.Controls.Models.TreeDataGrid;
 using DynamicData;
 using DynamicData.Aggregation;
 
+using DynamicTreeDataGrid.Columns;
 using DynamicTreeDataGrid.Models.Columns;
 
 namespace DynamicTreeDataGrid;
@@ -45,7 +46,6 @@ public class DynamicHierarchicalTreeDataGridSource<TModel, TModelKey> : Hierarch
 
     public IObservable<int> FilteredCount { get; }
     public IObservable<int> TotalCount { get; }
-
 
     public new DynamicColumnList<TModel> Columns { get; } = [];
     IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;

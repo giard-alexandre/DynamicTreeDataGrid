@@ -10,11 +10,11 @@ using Avalonia.Controls.Models;
 using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Controls.Selection;
 using Avalonia.Input;
-using Avalonia.Threading;
 
 using DynamicData;
 using DynamicData.Aggregation;
 
+using DynamicTreeDataGrid.Columns;
 using DynamicTreeDataGrid.Models.Columns;
 
 namespace DynamicTreeDataGrid;
@@ -29,6 +29,9 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     private readonly IObservable<Func<TModel, bool>> _itemsFilter;
     private readonly CompositeDisposable _d = new();
     private readonly ReadOnlyObservableCollection<TModel> _items;
+
+    public IObservable<int> FilteredCount { get; }
+    public IObservable<int> TotalCount { get; }
 
     public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes, IScheduler mainThreadScheduler) {
         _itemsFilter = _filterSource;
@@ -61,10 +64,6 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
 
         // TODO: Fix CreateRows()? Does this now work since we set the comparer?
     }
-
-
-    public IObservable<int> FilteredCount { get; }
-    public IObservable<int> TotalCount { get; }
 
     public DynamicColumnList<TModel> Columns { get; } = [];
     IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;

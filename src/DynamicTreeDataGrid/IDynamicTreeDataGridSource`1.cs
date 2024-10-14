@@ -1,5 +1,7 @@
 ﻿using Avalonia.Controls;
 
+using DynamicTreeDataGrid.State;
+
 namespace DynamicTreeDataGrid;
 
 public interface IDynamicTreeDataGridSource<TModel> : ITreeDataGridSource<TModel>, IDynamicTreeDataGridSource {

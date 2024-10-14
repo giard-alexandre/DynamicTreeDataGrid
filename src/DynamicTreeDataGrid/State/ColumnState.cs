@@ -1,7 +1,7 @@
 namespace DynamicTreeDataGrid.State;
 
-public class ColumnState {
-    public string Name { get; set; } = "";
+public record ColumnState(string Name) {
+    public string Name { get; init; } = Name;
     public int Index { get; set; }
-    public bool Visible { get; set; }
+    public bool Visible { get; set; } = true;
 }

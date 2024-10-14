@@ -65,7 +65,6 @@ public class ColumnStates {
         await Assert.That(result).IsTrue();
 
         // Check that items are in the right order/state applied.
-        await Assert.That(_list[0]).IsNotNull();
         await Assert.That(_list[0].Name).IsEqualTo("Name");
         await Assert.That(_list[0].Visible).IsEqualTo(true);
         await Assert.That(_list[1].Name).IsEqualTo("Date-of-Birth");
@@ -86,12 +85,31 @@ public class ColumnStates {
         await Assert.That(result).IsTrue();
 
         // Check that items are in the right order/state applied.
-        await Assert.That(_list[0]).IsNotNull();
         await Assert.That(_list[0].Name).IsEqualTo("Name");
         await Assert.That(_list[0].Visible).IsEqualTo(true);
         await Assert.That(_list[1].Name).IsEqualTo("Date-of-Birth");
         await Assert.That(_list[1].Visible).IsEqualTo(false);
         await Assert.That(_list[2].Name).IsEqualTo("Id");
+        await Assert.That(_list[2].Visible).IsEqualTo(true);
+    }
+
+    [Test]
+    public async Task ApplyColumnStates_WithSameIndexStates_AppliesThemInOrderOfAppearance() {
+        List<ColumnState> loadedStates = [
+            new("Id") { Index = 0, Visible = true },
+            new("Date-of-Birth") { Index = 0, Visible = false },
+        ];
+        var result = _list.ApplyColumnStates(loadedStates);
+
+        // Check that all items are in the right order and visible
+        await Assert.That(result).IsTrue();
+
+        // Check that items are in the right order/state applied.
+        await Assert.That(_list[0].Name).IsEqualTo("Date-of-Birth");
+        await Assert.That(_list[0].Visible).IsEqualTo(false);
+        await Assert.That(_list[1].Name).IsEqualTo("Id");
+        await Assert.That(_list[1].Visible).IsEqualTo(true);
+        await Assert.That(_list[2].Name).IsEqualTo("Name");
         await Assert.That(_list[2].Visible).IsEqualTo(true);
     }
 }

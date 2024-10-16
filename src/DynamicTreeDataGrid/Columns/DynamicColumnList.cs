@@ -43,7 +43,7 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
         IList<ColumnState> states = [];
         for (var i = 0; i < Count; i++) {
             var column = this[i];
-            states.Add(new ColumnState(column.Name) { Visible = column.Visible, Index = i });
+            states.Add(new ColumnState(column.Name) { Visible = column.Visible, Index = i, SortDirection = column.SortDirection });
         }
 
         return states;
@@ -59,6 +59,7 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
                 var oldIndex = IndexOf(column);
                 Move(oldIndex, state.Index);
                 column.Visible = state.Visible;
+                column.SortDirection = state.SortDirection;
             }
 
             return true;

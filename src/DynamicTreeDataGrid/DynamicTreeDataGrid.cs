@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 
 using DynamicTreeDataGrid.Controls;
+using DynamicTreeDataGrid.Source;
 
 namespace DynamicTreeDataGrid;
 

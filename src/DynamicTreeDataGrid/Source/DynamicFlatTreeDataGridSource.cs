@@ -17,7 +17,7 @@ using DynamicData.Aggregation;
 using DynamicTreeDataGrid.Columns;
 using DynamicTreeDataGrid.Models.Columns;
 
-namespace DynamicTreeDataGrid;
+namespace DynamicTreeDataGrid.Source;
 
 public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, IDynamicTreeDataGridSource<TModel>,
     IDisposable

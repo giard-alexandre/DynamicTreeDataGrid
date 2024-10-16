@@ -2,7 +2,7 @@
 
 using DynamicTreeDataGrid.Models.Columns;
 
-namespace DynamicTreeDataGrid;
+namespace DynamicTreeDataGrid.Source;
 
 public interface IDynamicTreeDataGridSource : ITreeDataGridSource {
     new IDynamicColumns Columns { get; }

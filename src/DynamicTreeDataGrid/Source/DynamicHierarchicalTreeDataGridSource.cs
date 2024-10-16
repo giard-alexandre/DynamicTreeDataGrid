@@ -10,7 +10,7 @@ using DynamicData.Aggregation;
 using DynamicTreeDataGrid.Columns;
 using DynamicTreeDataGrid.Models.Columns;
 
-namespace DynamicTreeDataGrid;
+namespace DynamicTreeDataGrid.Source;
 
 // TODO: Implement this for real :)
 public class DynamicHierarchicalTreeDataGridSource<TModel, TModelKey> : HierarchicalTreeDataGridSource<TModel>,

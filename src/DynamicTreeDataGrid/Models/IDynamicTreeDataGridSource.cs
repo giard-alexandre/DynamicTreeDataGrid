@@ -18,7 +18,7 @@ public interface IDynamicTreeDataGridSource : ITreeDataGridSource {
     /// </summary>
     public IObservable<int> TotalCount { get; }
 
-    GridState GetCurrentGridState();
+    GridState GetGridState();
     bool ApplyGridState(GridState state);
 
     // TODO: Add filter, state, maybe sort?

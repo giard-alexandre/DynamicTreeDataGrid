@@ -72,7 +72,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;
     IColumns ITreeDataGridSource.Columns => Columns.DisplayedColumns;
 
-    public GridState GetCurrentGridState() => new() { ColumnStates = Columns.GetColumnStates() };
+    public GridState GetGridState() => new() { ColumnStates = Columns.GetColumnStates() };
 
     public bool ApplyGridState(GridState state) => Columns.ApplyColumnStates(state.ColumnStates);
 

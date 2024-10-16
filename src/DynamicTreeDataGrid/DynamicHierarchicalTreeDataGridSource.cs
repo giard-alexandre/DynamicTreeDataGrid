@@ -53,7 +53,7 @@ public class DynamicHierarchicalTreeDataGridSource<TModel, TModelKey> : Hierarch
     IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;
     IColumns ITreeDataGridSource.Columns => Columns.DisplayedColumns;
 
-    public GridState GetCurrentGridState() => throw new NotImplementedException();
+    public GridState GetGridState() => throw new NotImplementedException();
     public bool ApplyGridState(GridState state) => throw new NotImplementedException();
 
     #region Override base sorted logic with IChangeSet sorting

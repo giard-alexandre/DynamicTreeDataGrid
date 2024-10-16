@@ -31,15 +31,22 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     private readonly ReadOnlyObservableCollection<TModel> _items;
     private readonly IObservable<Func<TModel, bool>> _itemsFilter;
     private readonly IObservable<IComparer<TModel>> _sort;
-    private readonly Subject<IComparer<TModel>?> _sortSource = new();
+    private readonly Subject<IComparer<TModel>?> _columnsSortSource = new();
+    private readonly DynamicTreeDataGridSourceOptions<TModel> _options;
 
     public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes,
-                                         IScheduler mainThreadScheduler) {
+                                         IScheduler mainThreadScheduler) : this(changes, mainThreadScheduler,
+        new DynamicTreeDataGridSourceOptions<TModel>()) { }
+
+    public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes,
+                                         IScheduler mainThreadScheduler, DynamicTreeDataGridSourceOptions<TModel> options) {
+        _options = options;
         _itemsFilter = _filterSource;
         TotalCount = changes.Count();
 
         // Setup Sort notifications
-        _sort = _sortSource.Select(comparer => comparer ?? new NoSortComparer<TModel>());
+        // TODO: combine IComparers
+        _sort = _columnsSortSource.Select(comparer => comparer ?? new NoSortComparer<TModel>());
         var sortDisposable = _sort.Subscribe(comparer => {
             // Reverse the NoSortComparer for this field from FlatTreeDataGridSource
             _comparer = comparer is NoSortComparer<TModel> ? null : comparer;
@@ -74,7 +81,25 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
 
     public GridState GetGridState() => new() { ColumnStates = Columns.GetColumnStates() };
 
-    public bool ApplyGridState(GridState state) => Columns.ApplyColumnStates(state.ColumnStates);
+    public bool ApplyGridState(GridState state) {
+        try
+        {
+            var columnsApplied = Columns.ApplyColumnStates(state.ColumnStates);
+            if (!columnsApplied) {
+                Console.WriteLine("Error applying column state");
+                return false;
+            }
+
+            // Set sort comparer once columns have been applied
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error applying grid state");
+            Console.WriteLine(e);
+            return false;
+        }
+    }
 
     /// <summary>
     /// </summary>
@@ -93,7 +118,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
                 var comparerInstance = new FuncComparer<TModel>(comparer);
 
                 // Trigger a new sort notification.
-                _sortSource.OnNext(comparerInstance);
+                _columnsSortSource.OnNext(comparerInstance);
                 foreach (var c in Columns)
                     c.SortDirection = c == column ? direction : null;
             }

@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace DynamicTreeDataGrid.State;
+namespace DynamicTreeDataGrid.Models.State;
 
 public record ColumnState(string Name) {
     public string Name { get; init; } = Name;

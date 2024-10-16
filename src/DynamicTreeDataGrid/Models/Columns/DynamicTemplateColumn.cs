@@ -2,9 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Controls.Templates;
 
-using DynamicTreeDataGrid.Models.Columns;
-
-namespace DynamicTreeDataGrid.Columns;
+namespace DynamicTreeDataGrid.Models.Columns;
 
 public class DynamicTemplateColumn<TModel> : TemplateColumn<TModel>, IDynamicColumn<TModel> {
     private bool _visible = true;

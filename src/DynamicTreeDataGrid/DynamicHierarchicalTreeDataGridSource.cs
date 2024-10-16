@@ -7,10 +7,10 @@ using Avalonia.Controls.Models.TreeDataGrid;
 using DynamicData;
 using DynamicData.Aggregation;
 
-using DynamicTreeDataGrid.Columns;
+using DynamicTreeDataGrid.Models;
 using DynamicTreeDataGrid.Models.Columns;
 
-namespace DynamicTreeDataGrid.Source;
+namespace DynamicTreeDataGrid;
 
 // TODO: Implement this for real :)
 public class DynamicHierarchicalTreeDataGridSource<TModel, TModelKey> : HierarchicalTreeDataGridSource<TModel>,

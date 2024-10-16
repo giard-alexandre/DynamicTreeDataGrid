@@ -14,10 +14,10 @@ using Avalonia.Input;
 using DynamicData;
 using DynamicData.Aggregation;
 
-using DynamicTreeDataGrid.Columns;
+using DynamicTreeDataGrid.Models;
 using DynamicTreeDataGrid.Models.Columns;
 
-namespace DynamicTreeDataGrid.Source;
+namespace DynamicTreeDataGrid;
 
 public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, IDynamicTreeDataGridSource<TModel>,
     IDisposable

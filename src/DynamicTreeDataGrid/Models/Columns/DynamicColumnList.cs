@@ -1,10 +1,9 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-using DynamicTreeDataGrid.Models.Columns;
-using DynamicTreeDataGrid.State;
+using DynamicTreeDataGrid.Models.State;
 
-namespace DynamicTreeDataGrid.Columns;
+namespace DynamicTreeDataGrid.Models.Columns;
 
 /// <summary>
 ///     Maintains 2 lists of columns. The main one, which is exposed by default, is the list of all columns

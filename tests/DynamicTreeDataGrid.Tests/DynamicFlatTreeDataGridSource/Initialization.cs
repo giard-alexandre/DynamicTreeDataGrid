@@ -4,8 +4,7 @@ using Bogus;
 
 using DynamicData.Binding;
 
-using DynamicTreeDataGrid.Columns;
-using DynamicTreeDataGrid.Source;
+using DynamicTreeDataGrid.Models.Columns;
 
 using Microsoft.Reactive.Testing;
 

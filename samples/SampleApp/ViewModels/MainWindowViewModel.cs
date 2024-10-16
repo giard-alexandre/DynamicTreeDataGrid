@@ -9,8 +9,8 @@ using Bogus.DataSets;
 using DynamicData;
 using DynamicData.Binding;
 
-using DynamicTreeDataGrid.Columns;
-using DynamicTreeDataGrid.Source;
+using DynamicTreeDataGrid;
+using DynamicTreeDataGrid.Models.Columns;
 
 using ReactiveUI;
 

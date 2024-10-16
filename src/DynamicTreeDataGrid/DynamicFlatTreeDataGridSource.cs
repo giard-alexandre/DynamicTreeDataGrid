@@ -17,6 +17,7 @@ using DynamicData.Aggregation;
 using DynamicTreeDataGrid.Models;
 using DynamicTreeDataGrid.Models.Columns;
 using DynamicTreeDataGrid.Models.Sorting;
+using DynamicTreeDataGrid.Models.State;
 
 namespace DynamicTreeDataGrid;
 
@@ -70,6 +71,10 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     public IObservable<int> TotalCount { get; }
     IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;
     IColumns ITreeDataGridSource.Columns => Columns.DisplayedColumns;
+
+    public GridState GetCurrentGridState() => new() { ColumnStates = Columns.GetColumnStates() };
+
+    public bool ApplyGridState(GridState state) => Columns.ApplyColumnStates(state.ColumnStates);
 
     /// <summary>
     /// </summary>

@@ -9,6 +9,7 @@ using DynamicData.Aggregation;
 
 using DynamicTreeDataGrid.Models;
 using DynamicTreeDataGrid.Models.Columns;
+using DynamicTreeDataGrid.Models.State;
 
 namespace DynamicTreeDataGrid;
 
@@ -51,6 +52,9 @@ public class DynamicHierarchicalTreeDataGridSource<TModel, TModelKey> : Hierarch
     public IObservable<int> TotalCount { get; }
     IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;
     IColumns ITreeDataGridSource.Columns => Columns.DisplayedColumns;
+
+    public GridState GetCurrentGridState() => throw new NotImplementedException();
+    public bool ApplyGridState(GridState state) => throw new NotImplementedException();
 
     #region Override base sorted logic with IChangeSet sorting
 

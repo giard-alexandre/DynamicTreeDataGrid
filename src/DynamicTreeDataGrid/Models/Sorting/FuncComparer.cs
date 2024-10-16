@@ -1,6 +1,6 @@
 // Code From: https://github.com/AvaloniaUI/Avalonia.Controls.TreeDataGrid/blob/master/src/Avalonia.Controls.TreeDataGrid/Models/TreeDataGrid/FuncComparer.cs
 
-namespace DynamicTreeDataGrid;
+namespace DynamicTreeDataGrid.Models.Sorting;
 
 internal class FuncComparer<T> : IComparer<T> {
     private readonly Comparison<T?> _func;

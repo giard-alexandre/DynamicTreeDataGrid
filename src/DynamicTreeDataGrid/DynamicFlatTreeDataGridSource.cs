@@ -16,6 +16,7 @@ using DynamicData.Aggregation;
 
 using DynamicTreeDataGrid.Models;
 using DynamicTreeDataGrid.Models.Columns;
+using DynamicTreeDataGrid.Models.Sorting;
 
 namespace DynamicTreeDataGrid;
 

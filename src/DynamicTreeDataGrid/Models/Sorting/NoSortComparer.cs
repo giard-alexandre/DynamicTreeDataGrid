@@ -1,4 +1,4 @@
-﻿namespace DynamicTreeDataGrid;
+﻿namespace DynamicTreeDataGrid.Models.Sorting;
 
 /// <summary>
 ///     A comparer that doesn't affect the comparison at all (will not change the order of items)

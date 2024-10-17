@@ -40,7 +40,9 @@ public class MainWindowViewModel : ReactiveObject {
 
 		var filteredData = data.Filter(searchFilter);
 
-		DataSource = new DynamicFlatTreeDataGridSource<Person, int>(filteredData, RxApp.MainThreadScheduler) {
+		DataSource = new DynamicFlatTreeDataGridSource<Person, int>(filteredData, RxApp.MainThreadScheduler, new DynamicTreeDataGridSourceOptions<Person>() {
+			PreColumnSort = SortExpressionComparer<Person>.Descending(person => person.IsChecked),
+		}) {
 			Columns = {
 				new DynamicTextColumn<Person, int>("Id", "Id", person => person.Id),
 				new DynamicTextColumn<Person, string>("Name", "Name", person => person.Name),

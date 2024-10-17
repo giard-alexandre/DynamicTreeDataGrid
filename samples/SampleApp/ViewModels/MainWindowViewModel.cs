@@ -42,6 +42,7 @@ public class MainWindowViewModel : ReactiveObject {
 
 		DataSource = new DynamicFlatTreeDataGridSource<Person, int>(filteredData, RxApp.MainThreadScheduler, new DynamicTreeDataGridSourceOptions<Person>() {
 			PreColumnSort = SortExpressionComparer<Person>.Descending(person => person.IsChecked),
+			PostColumnSort = SortExpressionComparer<Person>.Descending(person => person.Money),
 		}) {
 			Columns = {
 				new DynamicTextColumn<Person, int>("Id", "Id", person => person.Id),

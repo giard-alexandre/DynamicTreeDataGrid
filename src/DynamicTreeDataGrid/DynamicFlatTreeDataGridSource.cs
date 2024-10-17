@@ -50,7 +50,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
 
             // Trigger re-sorting if either column sort changes or the resorter from Options fires.
             .CombineLatest(Options.Resorter.StartWith(Unit.Default), resultSelector: (comparer, _) => comparer)
-            .Do(comparer => _comparer = comparer)
+            .Do(comparer => _comparer = comparer) // TODO: should the comparer be the CombinedComparer?
             .Select(comparer => new CombinedComparer<TModel>(Options.PreColumnSort, comparer, Options.PostColumnSort));
         var sortDisposable = _sort.Subscribe(comparer => { Sorted?.Invoke(); });
 
@@ -83,10 +83,38 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
 
     public bool ApplyGridState(GridState state) {
         try {
-            var columnsApplied = Columns.ApplyColumnStates(state.ColumnStates);
+            bool columnsApplied = Columns.ApplyColumnStates(state.ColumnStates);
             if (!columnsApplied) {
                 Console.WriteLine("Error applying column state");
                 return false;
+            }
+
+            // We keep only the first column to sort by here and ignore any extras
+            ColumnState? sortedColumnState = null;
+            int sortedColumns = 0;
+            foreach (var colState in state.ColumnStates)
+            {
+                if (colState.SortDirection is not null)
+                {
+                    sortedColumns++;
+                    sortedColumnState ??= colState;
+                }
+            }
+
+            if (sortedColumns > 1)
+            {
+                Console.WriteLine($"""
+                                   {nameof(DynamicFlatTreeDataGridSource<TModel, TModelKey>)}: More than one sorted
+                                   column was provided to the `ApplyGridState` method. This isn't an error but
+                                   only the first one was applied to the grid.
+                                   """);
+            }
+
+            // Trigger column sorting if we found a column to sort by.
+            // We only keep the last sorted column in the list on purpose, as we don't support sorting
+            // by more than one element atm.
+            if (sortedColumnState is not null) {
+                SortBy(Columns[sortedColumnState.Index], (ListSortDirection)sortedColumnState.SortDirection!);
             }
 
             // Set sort comparer once columns have been applied
@@ -106,25 +134,24 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     /// <returns></returns>
     /// <remarks>Slight changes to <see cref="ITreeDataGridSource.SortBy" /> but DynamicData-aware</remarks>
     public bool SortBy(IColumn? column, ListSortDirection direction) {
-        if (column is IColumn<TModel> typedColumn) {
-            if (!Columns.Contains(typedColumn))
-                return true;
+        if (column is not IColumn<TModel> typedColumn) return false;
 
-            var comparer = typedColumn.GetComparison(direction);
-
-            if (comparer is not null) {
-                var comparerInstance = new FuncComparer<TModel>(comparer);
-
-                // Trigger a new sort notification.
-                _columnsSortSource.OnNext(comparerInstance);
-                foreach (var c in Columns)
-                    c.SortDirection = c == column ? direction : null;
-            }
-
+        if (!Columns.Contains(typedColumn))
             return true;
+
+        var comparer = typedColumn.GetComparison(direction);
+
+        if (comparer is not null) {
+            var comparerInstance = new FuncComparer<TModel>(comparer);
+
+            // Trigger a new sort notification.
+            _columnsSortSource.OnNext(comparerInstance);
+            foreach (var c in Columns)
+                c.SortDirection = c == column ? direction : null;
         }
 
-        return false;
+        return true;
+
     }
 
 

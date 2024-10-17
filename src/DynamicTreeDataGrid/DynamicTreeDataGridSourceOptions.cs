@@ -22,9 +22,13 @@ public class DynamicTreeDataGridSourceOptions<TModel> {
 
     /// <summary>
     /// Sort optimization setting to apply to ALL sorts.
-    /// Includes the pre-columns and post-column sorts as well as the column sort itself.
-    /// You must be VERY sure that all sort possibilities can adhere to the <see cref="SortOptimisations"/> selected.
     /// </summary>
+    /// <remarks>
+    /// Includes the pre-columns and post-column sorts as well as the column sort itself.
+    /// You must be VERY sure that all sort possibilities can adhere to the <see cref="SortOptimisations"/> selected.<br/>
+    /// If any column has sorting enabled and the values are not immutable, then don't select
+    /// <see cref="DynamicData.SortOptimisations.ComparesImmutableValuesOnly"/>, for exmaple.
+    /// </remarks>
     public SortOptimisations SortOptimisations { get; init; } = SortOptimisations.None;
 
     /// <summary>

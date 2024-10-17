@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Text.Json;
@@ -85,6 +86,16 @@ public class MainWindowViewModel : ReactiveObject {
 
 	public void PrintColumnStates() {
 		Console.WriteLine(JsonSerializer.Serialize(DataSource.GetGridState(), _jsonOptions));
+	}
+
+	/// <summary>
+	/// Randomly sets one of the columns sorting direction to <see cref="ListSortDirection.Ascending"/>
+	/// </summary>
+	public void ApplyRandomState() {
+		var currentState = DataSource.GetGridState();
+		int randomColumn = new Random().Next(currentState.ColumnStates.Count);
+		currentState.ColumnStates[randomColumn].SortDirection = ListSortDirection.Ascending;
+		DataSource.ApplyGridState(currentState);
 	}
 
 	private static Func<Person, bool> BuildSearchFilter(string? text) {

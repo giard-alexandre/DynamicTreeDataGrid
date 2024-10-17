@@ -34,6 +34,7 @@
                 <ToggleSwitch Name="SortDirectionToggle" OffContent="Ascending" OnContent="Descending"
                               IsChecked="{Binding PreSortDescending}" />
             </StackPanel>
+            <Button Content="Apply Random Sort State" Command="{Binding ApplyRandomState}" />
 
         </StackPanel>
         <dynamicTreeDataGrid:DynamicTreeDataGrid Source="{Binding DataSource}">

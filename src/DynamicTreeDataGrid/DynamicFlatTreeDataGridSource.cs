@@ -33,7 +33,6 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     private readonly IObservable<Func<TModel, bool>> _itemsFilter;
     private readonly IObservable<IComparer<TModel>> _sort;
     private readonly BehaviorSubject<IComparer<TModel>?> _columnsSortSource = new(null);
-    private readonly DynamicTreeDataGridSourceOptions<TModel> _options;
 
     public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes,
                                          IScheduler mainThreadScheduler) : this(changes, mainThreadScheduler,
@@ -42,25 +41,24 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes,
                                          IScheduler mainThreadScheduler,
                                          DynamicTreeDataGridSourceOptions<TModel> options) {
-        _options = options;
+        Options = options;
         _itemsFilter = _filterSource;
         TotalCount = changes.Count();
 
         // Setup Sort notifications
         _sort = _columnsSortSource
 
-            // Trigger re-sorting if either column sort changes or the resorter from _options fires.
-            .CombineLatest(_options.Resorter.StartWith(Unit.Default), resultSelector: (comparer, _) => comparer)
+            // Trigger re-sorting if either column sort changes or the resorter from Options fires.
+            .CombineLatest(Options.Resorter.StartWith(Unit.Default), resultSelector: (comparer, _) => comparer)
             .Do(comparer => _comparer = comparer)
-            .Select(comparer =>
-                new CombinedComparer<TModel>(_options.PreColumnSort, comparer, _options.PostColumnSort));
+            .Select(comparer => new CombinedComparer<TModel>(Options.PreColumnSort, comparer, Options.PostColumnSort));
         var sortDisposable = _sort.Subscribe(comparer => { Sorted?.Invoke(); });
 
         var filteredChanges = changes.Filter(_itemsFilter);
         FilteredCount = filteredChanges.Count();
 
         var disposable = filteredChanges.DeferUntilLoaded()
-            .Sort(_sort, sortOptimisations: _options.SortOptimisations) // Use SortAndBind?
+            .Sort(_sort, sortOptimisations: Options.SortOptimisations) // Use SortAndBind?
             .ObserveOn(mainThreadScheduler)
             .Bind(out _items)
             .DisposeMany()
@@ -79,6 +77,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     public IObservable<int> TotalCount { get; }
     IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;
     IColumns ITreeDataGridSource.Columns => Columns.DisplayedColumns;
+    public DynamicTreeDataGridSourceOptions<TModel> Options { get; }
 
     public GridState GetGridState() => new() { ColumnStates = Columns.GetColumnStates() };
 

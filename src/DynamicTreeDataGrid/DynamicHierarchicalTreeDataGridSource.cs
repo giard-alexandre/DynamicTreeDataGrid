@@ -46,6 +46,7 @@ public class DynamicHierarchicalTreeDataGridSource<TModel, TModelKey> : Hierarch
         // TODO: Setup Sorted event for treeDataGridSourceImplementation?
     }
 
+    public DynamicTreeDataGridSourceOptions<TModel> Options { get; }
     public new DynamicColumnList<TModel> Columns { get; } = [];
 
     public IObservable<int> FilteredCount { get; }

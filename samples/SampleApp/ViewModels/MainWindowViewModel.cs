@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Text.Json;
 
@@ -18,7 +19,6 @@ namespace SampleApp.ViewModels;
 
 public class MainWindowViewModel : ReactiveObject {
 	private readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerOptions.Default) { WriteIndented = true };
-	private string? _filterText;
 
 	public MainWindowViewModel() {
 		//Set the randomizer seed to generate repeatable data sets.
@@ -40,9 +40,21 @@ public class MainWindowViewModel : ReactiveObject {
 
 		var filteredData = data.Filter(searchFilter);
 
+		var preSortDirectionStream = this.WhenValueChanged(t => t.PreSortDescending)
+			.Select(b => b ? SortDirection.Descending : SortDirection.Ascending)
+			.Do(x => {
+				if (DataSource is not null) {
+					DataSource.Options.PreColumnSort =
+						new SortExpressionComparer<Person> {
+							new SortExpression<Person>(person => person.IsChecked, x)
+						};
+				}
+			});
+
 		DataSource = new DynamicFlatTreeDataGridSource<Person, int>(filteredData, RxApp.MainThreadScheduler, new DynamicTreeDataGridSourceOptions<Person>() {
 			PreColumnSort = SortExpressionComparer<Person>.Descending(person => person.IsChecked),
 			PostColumnSort = SortExpressionComparer<Person>.Descending(person => person.Money),
+			Resorter = preSortDirectionStream.Select(_ => Unit.Default),
 		}) {
 			Columns = {
 				new DynamicTextColumn<Person, int>("Id", "Id", person => person.Id),
@@ -59,9 +71,16 @@ public class MainWindowViewModel : ReactiveObject {
 
 	public DynamicFlatTreeDataGridSource<Person, int> DataSource { get; set; }
 
+	private string? _filterText;
 	public string? FilterText {
 		get => _filterText;
 		set => this.RaiseAndSetIfChanged(ref _filterText, value);
+	}
+
+	private bool _preSortDescending = true;
+	public bool PreSortDescending {
+		get => _preSortDescending;
+		set => this.RaiseAndSetIfChanged(ref _preSortDescending, value);
 	}
 
 	public void PrintColumnStates() {

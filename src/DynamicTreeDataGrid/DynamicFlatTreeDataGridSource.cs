@@ -28,11 +28,11 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     private readonly CompositeDisposable _d = new();
 
     // By default, the filtering function just includes all rows.
-    private readonly ISubject<Func<TModel, bool>> _filterSource = new BehaviorSubject<Func<TModel, bool>>(_ => true);
+    private readonly BehaviorSubject<Func<TModel, bool>> _filterSource = new(_ => true);
     private readonly ReadOnlyObservableCollection<TModel> _items;
     private readonly IObservable<Func<TModel, bool>> _itemsFilter;
     private readonly IObservable<IComparer<TModel>> _sort;
-    private readonly Subject<IComparer<TModel>?> _columnsSortSource = new();
+    private readonly BehaviorSubject<IComparer<TModel>?> _columnsSortSource = new(null);
     private readonly DynamicTreeDataGridSourceOptions<TModel> _options;
 
     public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes,

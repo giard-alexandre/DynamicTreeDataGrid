@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -39,25 +40,27 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
         new DynamicTreeDataGridSourceOptions<TModel>()) { }
 
     public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes,
-                                         IScheduler mainThreadScheduler, DynamicTreeDataGridSourceOptions<TModel> options) {
+                                         IScheduler mainThreadScheduler,
+                                         DynamicTreeDataGridSourceOptions<TModel> options) {
         _options = options;
         _itemsFilter = _filterSource;
         TotalCount = changes.Count();
 
         // Setup Sort notifications
-        // TODO: combine IComparers
-        _sort = _columnsSortSource.Select(comparer => comparer ?? new NoSortComparer<TModel>());
-        var sortDisposable = _sort.Subscribe(comparer => {
-            // Reverse the NoSortComparer for this field from FlatTreeDataGridSource
-            _comparer = comparer is NoSortComparer<TModel> ? null : comparer;
-            Sorted?.Invoke();
-        });
+        _sort = _columnsSortSource
+
+            // Trigger re-sorting if either column sort changes or the resorter from _options fires.
+            .CombineLatest(_options.Resorter.StartWith(Unit.Default), resultSelector: (comparer, _) => comparer)
+            .Do(comparer => _comparer = comparer)
+            .Select(comparer =>
+                new CombinedComparer<TModel>(_options.PreColumnSort, comparer, _options.PostColumnSort));
+        var sortDisposable = _sort.Subscribe(comparer => { Sorted?.Invoke(); });
 
         var filteredChanges = changes.Filter(_itemsFilter);
         FilteredCount = filteredChanges.Count();
 
         var disposable = filteredChanges.DeferUntilLoaded()
-            .Sort(_sort) // Use SortAndBind?
+            .Sort(_sort, sortOptimisations: _options.SortOptimisations) // Use SortAndBind?
             .ObserveOn(mainThreadScheduler)
             .Bind(out _items)
             .DisposeMany()
@@ -68,8 +71,6 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
         // Setup Disposables
         _d.Add(disposable);
         _d.Add(sortDisposable);
-
-        // TODO: Fix CreateRows()? Does this now work since we set the comparer?
     }
 
     public DynamicColumnList<TModel> Columns { get; } = [];
@@ -82,8 +83,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     public GridState GetGridState() => new() { ColumnStates = Columns.GetColumnStates() };
 
     public bool ApplyGridState(GridState state) {
-        try
-        {
+        try {
             var columnsApplied = Columns.ApplyColumnStates(state.ColumnStates);
             if (!columnsApplied) {
                 Console.WriteLine("Error applying column state");
@@ -93,8 +93,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
             // Set sort comparer once columns have been applied
             return true;
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             Console.WriteLine("Error applying grid state");
             Console.WriteLine(e);
             return false;

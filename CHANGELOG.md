@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.7.0...v0.8.0) (2024-10-18)
+
+
+### 🚀 Features
+
+* ports tdg upstream changes ([fc1c413](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/fc1c413dd5ab96fad13b2a2291480c3d05cae0ab))
+
 ## [0.7.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.6.1...v0.7.0) (2024-10-18)
 
 

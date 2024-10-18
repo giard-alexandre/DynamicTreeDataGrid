@@ -8,21 +8,21 @@ public class DynamicTemplateColumn<TModel> : TemplateColumn<TModel>, IDynamicCol
     private bool _visible = true;
 
     public DynamicTemplateColumn(string name,
-                                 object? header,
-                                 IDataTemplate cellTemplate,
-                                 IDataTemplate? cellEditingTemplate = null,
-                                 GridLength? width = null,
-                                 TemplateColumnOptions<TModel>? options = null) : base(header, cellTemplate,
+        object? header,
+        IDataTemplate cellTemplate,
+        IDataTemplate? cellEditingTemplate = null,
+        GridLength? width = null,
+        TemplateColumnOptions<TModel>? options = null) : base(header, cellTemplate,
         cellEditingTemplate, width, options) {
         Name = name;
     }
 
     public DynamicTemplateColumn(string name,
-                                 object? header,
-                                 object cellTemplateResourceKey,
-                                 object? cellEditingTemplateResourceKey = null,
-                                 GridLength? width = null,
-                                 TemplateColumnOptions<TModel>? options = null) : base(header, cellTemplateResourceKey,
+        object? header,
+        object cellTemplateResourceKey,
+        object? cellEditingTemplateResourceKey = null,
+        GridLength? width = null,
+        TemplateColumnOptions<TModel>? options = null) : base(header, cellTemplateResourceKey,
         cellEditingTemplateResourceKey, width, options) {
         Name = name;
     }

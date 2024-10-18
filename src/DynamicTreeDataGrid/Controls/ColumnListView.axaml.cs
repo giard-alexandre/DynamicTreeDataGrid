@@ -46,13 +46,13 @@ public partial class ColumnListView : UserControl {
 
         // Render the item under the mouse and follow the mouse.
         var currentPosition = e.GetPosition(MainContainer);
-        var offsetX = currentPosition.X - _draggedItem.Bounds.Position.X - _draggedItem.Bounds.Width / 2;
-        var offsetY = currentPosition.Y - _draggedItem.Bounds.Position.Y - _draggedItem.Bounds.Height / 2;
+        double offsetX = currentPosition.X - _draggedItem.Bounds.Position.X - _draggedItem.Bounds.Width / 2;
+        double offsetY = currentPosition.Y - _draggedItem.Bounds.Position.Y - _draggedItem.Bounds.Height / 2;
         _draggedItem.RenderTransform = new TranslateTransform(offsetX, offsetY);
     }
 
     private void Drop(object? sender, DragEventArgs e) {
-        var data = e.Data.Get(DragItemFormat);
+        object? data = e.Data.Get(DragItemFormat);
 
         if (data is not IDynamicColumn sourceColumn) {
             Console.WriteLine("No column item");
@@ -104,7 +104,7 @@ public partial class ColumnListView : UserControl {
         if (DataContext is not IDynamicColumns columns) return;
 
         ((IReadOnlyList<IDynamicColumn>)columns)[0].Visible = true;
-        for (var i = 1; i < ((IReadOnlyList<IDynamicColumn>)columns).Count; i++)
+        for (int i = 1; i < ((IReadOnlyList<IDynamicColumn>)columns).Count; i++)
             ((IReadOnlyList<IDynamicColumn>)columns)[i].Visible = false;
     }
 }

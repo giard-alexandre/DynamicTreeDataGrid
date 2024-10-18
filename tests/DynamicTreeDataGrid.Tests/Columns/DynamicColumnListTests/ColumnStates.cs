@@ -58,7 +58,7 @@ public class ColumnStates {
             new("Name") { Index = 0, Visible = true },
             new("Date-of-Birth") { Index = 1, Visible = false },
         ];
-        var result = _list.ApplyColumnStates(loadedStates);
+        bool result = _list.ApplyColumnStates(loadedStates);
 
         // Check that all items are in the right order and visible
         await Assert.That(result).IsTrue();
@@ -78,7 +78,7 @@ public class ColumnStates {
             new("Id") { Index = 2, Visible = true },
             new("Date-of-Birth") { Index = 1, Visible = false },
         ];
-        var result = _list.ApplyColumnStates(loadedStates);
+        bool result = _list.ApplyColumnStates(loadedStates);
 
         // Check that all items are in the right order and visible
         await Assert.That(result).IsTrue();
@@ -98,7 +98,7 @@ public class ColumnStates {
             new("Id") { Index = 0, Visible = true },
             new("Date-of-Birth") { Index = 0, Visible = false },
         ];
-        var result = _list.ApplyColumnStates(loadedStates);
+        bool result = _list.ApplyColumnStates(loadedStates);
 
         // Check that all items are in the right order and visible
         await Assert.That(result).IsTrue();

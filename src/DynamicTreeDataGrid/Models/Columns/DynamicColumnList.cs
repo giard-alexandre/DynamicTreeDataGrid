@@ -27,8 +27,8 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
     public IDynamicColumnsBase DisplayedColumns => _displayedColumns;
 
     public void Move(IDynamicColumn oldLocation, IDynamicColumn newLocation) {
-        var oldIndex = IndexOf((IDynamicColumn<TModel>)oldLocation);
-        var newIndex = IndexOf((IDynamicColumn<TModel>)newLocation);
+        int oldIndex = IndexOf((IDynamicColumn<TModel>)oldLocation);
+        int newIndex = IndexOf((IDynamicColumn<TModel>)newLocation);
         Move(oldIndex, newIndex);
     }
 
@@ -40,9 +40,11 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
 
     public IList<ColumnState> GetColumnStates() {
         IList<ColumnState> states = [];
-        for (var i = 0; i < Count; i++) {
+        for (int i = 0; i < Count; i++) {
             var column = this[i];
-            states.Add(new ColumnState(column.Name) { Visible = column.Visible, Index = i, SortDirection = column.SortDirection });
+            states.Add(new ColumnState(column.Name) {
+                Visible = column.Visible, Index = i, SortDirection = column.SortDirection,
+            });
         }
 
         return states;
@@ -55,7 +57,7 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
                 .ToList();
 
             foreach (var (column, state) in intersections) {
-                var oldIndex = IndexOf(column);
+                int oldIndex = IndexOf(column);
                 Move(oldIndex, state.Index);
                 column.Visible = state.Visible;
             }
@@ -71,12 +73,12 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
     private void SyncFilteredCollection(object? sender, NotifyCollectionChangedEventArgs e) {
         switch (e.Action) {
             case NotifyCollectionChangedAction.Add:
-                foreach (var newItem in e.NewItems) ItemAdded(newItem);
+                foreach (object? newItem in e.NewItems) ItemAdded(newItem);
 
                 break;
 
             case NotifyCollectionChangedAction.Remove:
-                foreach (var oldItem in e.OldItems) ItemRemoved(oldItem);
+                foreach (object? oldItem in e.OldItems) ItemRemoved(oldItem);
 
                 break;
 
@@ -111,8 +113,8 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
         column.PropertyChanged += Item_PropertyChanged;
         if (!column.Visible) return;
 
-        var index = IndexOf(column);
-        var offset = GetDisplayedOffset(index);
+        int index = IndexOf(column);
+        int offset = GetDisplayedOffset(index);
         _displayedColumns.Insert(index - offset, column);
     }
 
@@ -134,8 +136,8 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
     }
 
     private int GetDisplayedOffset(int desiredIndex) {
-        var indexOffset = 0;
-        for (var i = 0; i < desiredIndex; i++)
+        int indexOffset = 0;
+        for (int i = 0; i < desiredIndex; i++)
             if (!this[i].Visible)
                 indexOffset++;
 
@@ -146,8 +148,8 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
         if (sender is not IDynamicColumn<TModel> column || e.PropertyName != nameof(IDynamicColumn.Visible)) return;
 
         if (column.Visible && !_displayedColumns.Contains(column)) {
-            var index = IndexOf(column);
-            var offset = GetDisplayedOffset(index);
+            int index = IndexOf(column);
+            int offset = GetDisplayedOffset(index);
             _displayedColumns.Insert(index - offset, column);
         }
         else if (_displayedColumns.Count <= 1) {

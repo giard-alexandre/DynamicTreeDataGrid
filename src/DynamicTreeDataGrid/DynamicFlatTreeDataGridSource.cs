@@ -25,6 +25,7 @@ namespace DynamicTreeDataGrid;
 public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, IDynamicTreeDataGridSource<TModel>,
     IDisposable
     where TModel : class where TModelKey : notnull {
+    private readonly BehaviorSubject<IComparer<TModel>?> _columnsSortSource = new(null);
     private readonly CompositeDisposable _d = new();
 
     // By default, the filtering function just includes all rows.
@@ -32,15 +33,14 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     private readonly ReadOnlyObservableCollection<TModel> _items;
     private readonly IObservable<Func<TModel, bool>> _itemsFilter;
     private readonly IObservable<IComparer<TModel>> _sort;
-    private readonly BehaviorSubject<IComparer<TModel>?> _columnsSortSource = new(null);
 
     public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes,
-                                         IScheduler mainThreadScheduler) : this(changes, mainThreadScheduler,
+        IScheduler mainThreadScheduler) : this(changes, mainThreadScheduler,
         new DynamicTreeDataGridSourceOptions<TModel>()) { }
 
     public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes,
-                                         IScheduler mainThreadScheduler,
-                                         DynamicTreeDataGridSourceOptions<TModel> options) {
+        IScheduler mainThreadScheduler,
+        DynamicTreeDataGridSourceOptions<TModel> options) {
         Options = options;
         _itemsFilter = _filterSource;
         TotalCount = changes.Count();
@@ -49,7 +49,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
         _sort = _columnsSortSource
 
             // Trigger re-sorting if either column sort changes or the resorter from Options fires.
-            .CombineLatest(Options.Resorter.StartWith(Unit.Default), resultSelector: (comparer, _) => comparer)
+            .CombineLatest(Options.Resorter.StartWith(Unit.Default), (comparer, _) => comparer)
             .Do(comparer => _comparer = comparer) // TODO: should the comparer be the CombinedComparer?
             .Select(comparer => new CombinedComparer<TModel>(Options.PreColumnSort, comparer, Options.PostColumnSort));
         var sortDisposable = _sort.Subscribe(comparer => { Sorted?.Invoke(); });
@@ -58,7 +58,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
         FilteredCount = filteredChanges.Count();
 
         var disposable = filteredChanges.DeferUntilLoaded()
-            .Sort(_sort, sortOptimisations: Options.SortOptimisations) // Use SortAndBind?
+            .Sort(_sort, Options.SortOptimisations) // Use SortAndBind?
             .ObserveOn(mainThreadScheduler)
             .Bind(out _items)
             .DisposeMany()
@@ -93,28 +93,24 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
             ColumnState? sortedColumnState = null;
             int sortedColumns = 0;
             foreach (var colState in state.ColumnStates)
-            {
                 if (colState.SortDirection is not null) {
                     sortedColumns++;
                     sortedColumnState ??= colState;
                 }
-            }
 
-            if (sortedColumns > 1) {
-	            Console.WriteLine(
-		            $"""
-		             {nameof(DynamicFlatTreeDataGridSource<TModel, TModelKey>)}: More than one sorted
-		             column was provided to the `ApplyGridState` method. This isn't an error but
-		             only the first one was applied to the grid.
-		             """);
-            }
+            if (sortedColumns > 1)
+                Console.WriteLine(
+                    $"""
+                     {nameof(DynamicFlatTreeDataGridSource<TModel, TModelKey>)}: More than one sorted
+                     column was provided to the `ApplyGridState` method. This isn't an error but
+                     only the first one was applied to the grid.
+                     """);
 
             // Trigger column sorting if we found a column to sort by.
             // We only keep the last sorted column in the list on purpose, as we don't support sorting
             // by more than one element atm.
-            if (sortedColumnState is not null) {
+            if (sortedColumnState is not null)
                 SortBy(Columns[sortedColumnState.Index], (ListSortDirection)sortedColumnState.SortDirection!);
-            }
 
             // Set sort comparer once columns have been applied
             return true;
@@ -145,14 +141,13 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
 
             // Clear other columns sort and assign sort to selected column
             foreach (var c in Columns)
-	            c.SortDirection = c == typedColumn ? direction : null;
+                c.SortDirection = c == typedColumn ? direction : null;
 
             // Trigger a new sort notification.
             _columnsSortSource.OnNext(comparerInstance);
         }
 
         return true;
-
     }
 
 
@@ -199,10 +194,10 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     public event Action? Sorted;
 
     void ITreeDataGridSource.DragDropRows(ITreeDataGridSource source,
-                                          IEnumerable<IndexPath> indexes,
-                                          IndexPath targetIndex,
-                                          TreeDataGridRowDropPosition position,
-                                          DragDropEffects effects) {
+        IEnumerable<IndexPath> indexes,
+        IndexPath targetIndex,
+        TreeDataGridRowDropPosition position,
+        DragDropEffects effects) {
         if (effects != DragDropEffects.Move)
             throw new NotSupportedException("Only move is currently supported for drag/drop.");
         if (IsSorted)
@@ -219,7 +214,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
         if (position == TreeDataGridRowDropPosition.None)
             return;
 
-        var ti = targetIndex[0];
+        int ti = targetIndex[0];
 
         if (position == TreeDataGridRowDropPosition.After)
             ++ti;
@@ -227,7 +222,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
         var sourceItems = new List<TModel>();
 
         foreach (var src in indexes.OrderByDescending(x => x)) {
-            var i = src[0];
+            int i = src[0];
             sourceItems.Add(items[i]);
             items.RemoveAt(i);
 
@@ -235,7 +230,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
                 --ti;
         }
 
-        for (var si = sourceItems.Count - 1; si >= 0; --si) items.Insert(ti++, sourceItems[si]);
+        for (int si = sourceItems.Count - 1; si >= 0; --si) items.Insert(ti++, sourceItems[si]);
     }
 
     IEnumerable<object> ITreeDataGridSource.GetModelChildren(object model) => Enumerable.Empty<object>();

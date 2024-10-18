@@ -27,11 +27,11 @@ public class DynamicColumnListBase<TModel> : NotifyingListBase<IDynamicColumn<TM
     }
 
     public (int index, double x) GetColumnAt(double x) {
-        var start = 0.0;
+        double start = 0.0;
 
-        for (var i = 0; i < Count; ++i) {
+        for (int i = 0; i < Count; ++i) {
             var column = this[i];
-            var end = start + column.ActualWidth;
+            double end = start + column.ActualWidth;
             if (x >= start && x < end)
                 return (i, start);
             if (double.IsNaN(column.ActualWidth))
@@ -43,12 +43,12 @@ public class DynamicColumnListBase<TModel> : NotifyingListBase<IDynamicColumn<TM
     }
 
     public double GetEstimatedWidth(double constraint) {
-        var hasStar = false;
-        var totalMeasured = 0.0;
-        var measuredCount = 0;
-        var unmeasuredCount = 0;
+        bool hasStar = false;
+        double totalMeasured = 0.0;
+        int measuredCount = 0;
+        int unmeasuredCount = 0;
 
-        for (var i = 0; i < Count; ++i) {
+        for (int i = 0; i < Count; ++i) {
             var column = (IUpdateColumnLayout)this[i];
 
             if (column.Width.IsStar) {
@@ -72,7 +72,7 @@ public class DynamicColumnListBase<TModel> : NotifyingListBase<IDynamicColumn<TM
         // If there are a mix of measured and unmeasured columns then use the measured columns
         // to estimate the size of the unmeasured columns.
         if (measuredCount > 0 && unmeasuredCount > 0) {
-            var estimated = totalMeasured / measuredCount * unmeasuredCount;
+            double estimated = totalMeasured / measuredCount * unmeasuredCount;
             return totalMeasured + estimated;
         }
 
@@ -136,19 +136,19 @@ public class DynamicColumnListBase<TModel> : NotifyingListBase<IDynamicColumn<TM
     }
 
     protected override void RemoveItem(int index) {
-        var removedName = this[index].Name;
+        string? removedName = this[index].Name;
         _nameSet.Remove(removedName);
         base.RemoveItem(index);
     }
 
     private void UpdateColumnSizes() {
-        var totalStars = 0.0;
-        var availableSpace = _viewportWidth;
-        var invalidated = false;
+        double totalStars = 0.0;
+        double availableSpace = _viewportWidth;
+        bool invalidated = false;
 
         // First commit the actual width for all non-star width columns and get a total of the
         // number of stars for star width columns.
-        for (var i = 0; i < Count; ++i) {
+        for (int i = 0; i < Count; ++i) {
             var column = (IUpdateColumnLayout)this[i];
 
             if (!column.Width.IsStar) {
@@ -162,13 +162,13 @@ public class DynamicColumnListBase<TModel> : NotifyingListBase<IDynamicColumn<TM
 
         if (totalStars > 0) {
             // Size the star columns.
-            var starWidthWasConstrained = false;
-            var used = 0.0;
+            bool starWidthWasConstrained = false;
+            double used = 0.0;
 
             availableSpace = Math.Max(0, availableSpace);
 
             // Do a first pass to calculate star column widths.
-            for (var i = 0; i < Count; ++i) {
+            for (int i = 0; i < Count; ++i) {
                 var column = (IUpdateColumnLayout)this[i];
 
                 if (column.Width.IsStar) {
@@ -182,7 +182,7 @@ public class DynamicColumnListBase<TModel> : NotifyingListBase<IDynamicColumn<TM
             // actually had any space to distribute between star columns, then we need to update
             // the star width for the non-constrained columns.
             if (starWidthWasConstrained && MathUtilities.GreaterThan(availableSpace, 0)) {
-                for (var i = 0; i < Count; ++i) {
+                for (int i = 0; i < Count; ++i) {
                     var column = (IUpdateColumnLayout)this[i];
 
                     if (column.StarWidthWasConstrained) {
@@ -191,7 +191,7 @@ public class DynamicColumnListBase<TModel> : NotifyingListBase<IDynamicColumn<TM
                     }
                 }
 
-                for (var i = 0; i < Count; ++i) {
+                for (int i = 0; i < Count; ++i) {
                     var column = (IUpdateColumnLayout)this[i];
                     if (column.Width.IsStar && !column.StarWidthWasConstrained)
                         column.CalculateStarWidth(availableSpace, totalStars);
@@ -199,7 +199,7 @@ public class DynamicColumnListBase<TModel> : NotifyingListBase<IDynamicColumn<TM
             }
 
             // Finally commit the star column widths.
-            for (var i = 0; i < Count; ++i) {
+            for (int i = 0; i < Count; ++i) {
                 var column = (IUpdateColumnLayout)this[i];
 
                 if (column.Width.IsStar) invalidated |= column.CommitActualWidth();

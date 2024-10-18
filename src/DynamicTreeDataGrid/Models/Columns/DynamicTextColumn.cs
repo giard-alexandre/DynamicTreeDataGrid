@@ -25,10 +25,10 @@ public class DynamicTextColumn<TModel, TValue> : TextColumn<TModel, TValue>, IDy
     /// </param>
     /// <param name="options">Additional column options.</param>
     public DynamicTextColumn(string name,
-                             object? header,
-                             Expression<Func<TModel, TValue?>> getter,
-                             GridLength? width = null,
-                             TextColumnOptions<TModel>? options = null) : base(header, getter, width, options) {
+        object? header,
+        Expression<Func<TModel, TValue?>> getter,
+        GridLength? width = null,
+        TextColumnOptions<TModel>? options = null) : base(header, getter, width, options) {
         Name = name;
     }
 
@@ -52,11 +52,11 @@ public class DynamicTextColumn<TModel, TValue> : TextColumn<TModel, TValue>, IDy
     /// </param>
     /// <param name="options">Additional column options.</param>
     public DynamicTextColumn(string name,
-                             object? header,
-                             Expression<Func<TModel, TValue?>> getter,
-                             Action<TModel, TValue?> setter,
-                             GridLength? width = null,
-                             TextColumnOptions<TModel>? options = null) : base(header, getter, setter, width,
+        object? header,
+        Expression<Func<TModel, TValue?>> getter,
+        Action<TModel, TValue?> setter,
+        GridLength? width = null,
+        TextColumnOptions<TModel>? options = null) : base(header, getter, setter, width,
         options ?? new TextColumnOptions<TModel>()) {
         Name = name;
     }

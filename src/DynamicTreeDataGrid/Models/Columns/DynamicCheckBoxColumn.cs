@@ -37,11 +37,11 @@ public class DynamicCheckBoxColumn<TModel> : CheckBoxColumn<TModel>, IDynamicCol
     /// </param>
     /// <param name="options">Additional column options.</param>
     public DynamicCheckBoxColumn(string name,
-                                 object? header,
-                                 Expression<Func<TModel, bool>> getter,
-                                 Action<TModel, bool>? setter = null,
-                                 GridLength? width = null,
-                                 CheckBoxColumnOptions<TModel>? options = null) : base(header, getter, setter, width,
+        object? header,
+        Expression<Func<TModel, bool>> getter,
+        Action<TModel, bool>? setter = null,
+        GridLength? width = null,
+        CheckBoxColumnOptions<TModel>? options = null) : base(header, getter, setter, width,
         options) {
         Name = name;
     }
@@ -68,11 +68,11 @@ public class DynamicCheckBoxColumn<TModel> : CheckBoxColumn<TModel>, IDynamicCol
     /// </param>
     /// <param name="options">Additional column options.</param>
     public DynamicCheckBoxColumn(string name,
-                                 object? header,
-                                 Expression<Func<TModel, bool?>> getter,
-                                 Action<TModel, bool?>? setter = null,
-                                 GridLength? width = null,
-                                 CheckBoxColumnOptions<TModel>? options = null) : base(header, getter, setter, width,
+        object? header,
+        Expression<Func<TModel, bool?>> getter,
+        Action<TModel, bool?>? setter = null,
+        GridLength? width = null,
+        CheckBoxColumnOptions<TModel>? options = null) : base(header, getter, setter, width,
         options) {
         Name = name;
     }

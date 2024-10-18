@@ -133,7 +133,7 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     /// <returns></returns>
     /// <remarks>Slight changes to <see cref="ITreeDataGridSource.SortBy" /> but DynamicData-aware</remarks>
     public bool SortBy(IColumn? column, ListSortDirection direction) {
-        if (column is not IColumn<TModel> typedColumn) return false;
+        if (column is not IDynamicColumn<TModel> typedColumn) return false;
 
         if (!Columns.Contains(typedColumn))
             return true;
@@ -143,9 +143,9 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
         if (comparer is not null) {
             var comparerInstance = new FuncComparer<TModel>(comparer);
 
-            // Clear other columns sort
+            // Clear other columns sort and assign sort to selected column
             foreach (var c in Columns)
-	            c.SortDirection = c == column ? direction : null;
+	            c.SortDirection = c == typedColumn ? direction : null;
 
             // Trigger a new sort notification.
             _columnsSortSource.OnNext(comparerInstance);

@@ -5,6 +5,8 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Text.Json;
 
+using Avalonia.Controls.Models.TreeDataGrid;
+
 using Bogus;
 using Bogus.DataSets;
 
@@ -61,7 +63,27 @@ public class MainWindowViewModel : ReactiveObject {
 				new DynamicTextColumn<Person, int>("Id", "Id", person => person.Id),
 				new DynamicTextColumn<Person, string>("Name", "Name", person => person.Name),
 				new DynamicTextColumn<Person, DateTime>("Date-of-Birth", "DoB", person => person.DateOfBirth),
-				new DynamicTemplateColumn<Person>("Height", "Height", "HeightCell"),
+				new DynamicTemplateColumn<Person>("Height", "Height", "HeightCell",
+					options: new TemplateColumnOptions<Person> {
+						CompareAscending = (person, person1) => {
+							if (person.Height > person1.Height)
+								return 1;
+
+							if (person.Height == person1.Height)
+								return 0;
+
+							return -1;
+						},
+						CompareDescending = (person, person1) => {
+							if (person.Height > person1.Height)
+								return -1;
+
+							if (person.Height == person1.Height)
+								return 0;
+
+							return 1;
+						},
+					}),
 				new DynamicTextColumn<Person, double>("Height-Raw", "Raw Height", person => person.Height),
 				new DynamicTextColumn<Person, Name.Gender>("Gender", "Gender", person => person.Gender), // To Template
 				new DynamicTextColumn<Person, decimal>("Money", "Money", person => person.Money),

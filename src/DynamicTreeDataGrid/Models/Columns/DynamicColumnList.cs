@@ -58,7 +58,6 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
                 var oldIndex = IndexOf(column);
                 Move(oldIndex, state.Index);
                 column.Visible = state.Visible;
-                column.SortDirection = state.SortDirection;
             }
 
             return true;

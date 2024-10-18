@@ -94,6 +94,9 @@ public class MainWindowViewModel : ReactiveObject {
 	public void ApplyRandomState() {
 		var currentState = DataSource.GetGridState();
 		int randomColumn = new Random().Next(currentState.ColumnStates.Count);
+		// Clear state columns sort
+		foreach (var c in currentState.ColumnStates)
+			c.SortDirection =  null;
 		currentState.ColumnStates[randomColumn].SortDirection = ListSortDirection.Ascending;
 		DataSource.ApplyGridState(currentState);
 	}

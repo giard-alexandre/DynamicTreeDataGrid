@@ -94,20 +94,19 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
             int sortedColumns = 0;
             foreach (var colState in state.ColumnStates)
             {
-                if (colState.SortDirection is not null)
-                {
+                if (colState.SortDirection is not null) {
                     sortedColumns++;
                     sortedColumnState ??= colState;
                 }
             }
 
-            if (sortedColumns > 1)
-            {
-                Console.WriteLine($"""
-                                   {nameof(DynamicFlatTreeDataGridSource<TModel, TModelKey>)}: More than one sorted
-                                   column was provided to the `ApplyGridState` method. This isn't an error but
-                                   only the first one was applied to the grid.
-                                   """);
+            if (sortedColumns > 1) {
+	            Console.WriteLine(
+		            $"""
+		             {nameof(DynamicFlatTreeDataGridSource<TModel, TModelKey>)}: More than one sorted
+		             column was provided to the `ApplyGridState` method. This isn't an error but
+		             only the first one was applied to the grid.
+		             """);
             }
 
             // Trigger column sorting if we found a column to sort by.
@@ -144,10 +143,12 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
         if (comparer is not null) {
             var comparerInstance = new FuncComparer<TModel>(comparer);
 
+            // Clear other columns sort
+            foreach (var c in Columns)
+	            c.SortDirection = c == column ? direction : null;
+
             // Trigger a new sort notification.
             _columnsSortSource.OnNext(comparerInstance);
-            foreach (var c in Columns)
-                c.SortDirection = c == column ? direction : null;
         }
 
         return true;

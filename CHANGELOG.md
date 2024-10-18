@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.7.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.6.1...v0.7.0) (2024-10-18)
+
+
+### 🚀 Features
+
+* add column sort direction ([fb4996d](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/fb4996dfe4b16ed68a4435b4071ca8cf72941fdc))
+* add gridsource options ([bd01aa2](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/bd01aa2a30d8a1ab52ead233bf7103724804dfaf))
+* add gridsource options ([eb81c62](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/eb81c62b7852b4d5603c0145c2fb68db9bd60c9c))
+* resort on observable ([fb0cb4f](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/fb0cb4fddfabcf1d9f61b9e508b1f8570530c1f2))
+* sort column when state applied ([061a10c](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/061a10c0fa9967ea151d88932b7a34c0f2d18224))
+* wip apply sort state ([9f92ae6](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/9f92ae6c65cc3bdad7ce8e14fb1fc2005a5ede38))
+* wire up full grid state ([2c6b85b](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/2c6b85b950d73dba47338429f540238264a95c28))
+
+
+### 🐛 Bug Fixes
+
+* column state apply ([6ba54c0](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/6ba54c04d65a3f0e5e0ca6da1fda688b0cc2d06a))
+* properly emit source on first time ([6039573](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/6039573f1d7d2a0537c5c77e67608a3ff5f14dde))
+* sort application ([275dc87](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/275dc8769f546be85ea5c89e75ee31b68c02fcda))
+
 ## [0.6.1](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.6.0...v0.6.1) (2024-10-14)
 
 

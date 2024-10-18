@@ -18,9 +18,24 @@
 
     <DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <Label Target="FilterTextBox">Filter Name: </Label>
-            <TextBox Name="FilterTextBox" Text="{Binding FilterText}" Width="200" />
+            <StackPanel.Styles>
+                <Style Selector="StackPanel">
+                    <Setter Property="Orientation" Value="Horizontal" />
+                    <Setter Property="Margin" Value="5" />
+                </Style>
+            </StackPanel.Styles>
+            <StackPanel>
+                <Label Target="FilterTextBox">Filter Name: </Label>
+                <TextBox Name="FilterTextBox" Text="{Binding FilterText}" Width="200" />
+            </StackPanel>
             <Button Content="Print Column States To Console" Command="{Binding PrintColumnStates}" />
+            <StackPanel>
+                <Label Target="SortDirectionToggle">Pre-Sort Descending</Label>
+                <ToggleSwitch Name="SortDirectionToggle" OffContent="Ascending" OnContent="Descending"
+                              IsChecked="{Binding PreSortDescending}" />
+            </StackPanel>
+            <Button Content="Apply Random Sort State" Command="{Binding ApplyRandomState}" />
+
         </StackPanel>
         <dynamicTreeDataGrid:DynamicTreeDataGrid Source="{Binding DataSource}">
             <TreeDataGrid.Resources>

@@ -1,5 +1,5 @@
-﻿using DynamicTreeDataGrid.Columns;
-using DynamicTreeDataGrid.State;
+﻿using DynamicTreeDataGrid.Models.Columns;
+using DynamicTreeDataGrid.Models.State;
 
 using Microsoft.Reactive.Testing;
 

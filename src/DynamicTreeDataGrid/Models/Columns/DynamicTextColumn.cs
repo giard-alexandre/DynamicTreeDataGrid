@@ -3,9 +3,7 @@ using System.Linq.Expressions;
 using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
 
-using DynamicTreeDataGrid.Models.Columns;
-
-namespace DynamicTreeDataGrid.Columns;
+namespace DynamicTreeDataGrid.Models.Columns;
 
 public class DynamicTextColumn<TModel, TValue> : TextColumn<TModel, TValue>, IDynamicColumn<TModel>
     where TModel : class {

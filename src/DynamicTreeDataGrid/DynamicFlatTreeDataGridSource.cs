@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -14,8 +15,10 @@ using Avalonia.Input;
 using DynamicData;
 using DynamicData.Aggregation;
 
-using DynamicTreeDataGrid.Columns;
+using DynamicTreeDataGrid.Models;
 using DynamicTreeDataGrid.Models.Columns;
+using DynamicTreeDataGrid.Models.Sorting;
+using DynamicTreeDataGrid.Models.State;
 
 namespace DynamicTreeDataGrid;
 
@@ -25,30 +28,37 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     private readonly CompositeDisposable _d = new();
 
     // By default, the filtering function just includes all rows.
-    private readonly ISubject<Func<TModel, bool>> _filterSource = new BehaviorSubject<Func<TModel, bool>>(_ => true);
+    private readonly BehaviorSubject<Func<TModel, bool>> _filterSource = new(_ => true);
     private readonly ReadOnlyObservableCollection<TModel> _items;
     private readonly IObservable<Func<TModel, bool>> _itemsFilter;
     private readonly IObservable<IComparer<TModel>> _sort;
-    private readonly Subject<IComparer<TModel>?> _sortSource = new();
+    private readonly BehaviorSubject<IComparer<TModel>?> _columnsSortSource = new(null);
 
     public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes,
-                                         IScheduler mainThreadScheduler) {
+                                         IScheduler mainThreadScheduler) : this(changes, mainThreadScheduler,
+        new DynamicTreeDataGridSourceOptions<TModel>()) { }
+
+    public DynamicFlatTreeDataGridSource(IObservable<IChangeSet<TModel, TModelKey>> changes,
+                                         IScheduler mainThreadScheduler,
+                                         DynamicTreeDataGridSourceOptions<TModel> options) {
+        Options = options;
         _itemsFilter = _filterSource;
         TotalCount = changes.Count();
 
         // Setup Sort notifications
-        _sort = _sortSource.Select(comparer => comparer ?? new NoSortComparer<TModel>());
-        var sortDisposable = _sort.Subscribe(comparer => {
-            // Reverse the NoSortComparer for this field from FlatTreeDataGridSource
-            _comparer = comparer is NoSortComparer<TModel> ? null : comparer;
-            Sorted?.Invoke();
-        });
+        _sort = _columnsSortSource
+
+            // Trigger re-sorting if either column sort changes or the resorter from Options fires.
+            .CombineLatest(Options.Resorter.StartWith(Unit.Default), resultSelector: (comparer, _) => comparer)
+            .Do(comparer => _comparer = comparer) // TODO: should the comparer be the CombinedComparer?
+            .Select(comparer => new CombinedComparer<TModel>(Options.PreColumnSort, comparer, Options.PostColumnSort));
+        var sortDisposable = _sort.Subscribe(comparer => { Sorted?.Invoke(); });
 
         var filteredChanges = changes.Filter(_itemsFilter);
         FilteredCount = filteredChanges.Count();
 
         var disposable = filteredChanges.DeferUntilLoaded()
-            .Sort(_sort) // Use SortAndBind?
+            .Sort(_sort, sortOptimisations: Options.SortOptimisations) // Use SortAndBind?
             .ObserveOn(mainThreadScheduler)
             .Bind(out _items)
             .DisposeMany()
@@ -59,8 +69,6 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
         // Setup Disposables
         _d.Add(disposable);
         _d.Add(sortDisposable);
-
-        // TODO: Fix CreateRows()? Does this now work since we set the comparer?
     }
 
     public DynamicColumnList<TModel> Columns { get; } = [];
@@ -69,6 +77,54 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     public IObservable<int> TotalCount { get; }
     IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;
     IColumns ITreeDataGridSource.Columns => Columns.DisplayedColumns;
+    public DynamicTreeDataGridSourceOptions<TModel> Options { get; }
+
+    public GridState GetGridState() => new() { ColumnStates = Columns.GetColumnStates() };
+
+    public bool ApplyGridState(GridState state) {
+        try {
+            bool columnsApplied = Columns.ApplyColumnStates(state.ColumnStates);
+            if (!columnsApplied) {
+                Console.WriteLine("Error applying column state");
+                return false;
+            }
+
+            // We keep only the first column to sort by here and ignore any extras
+            ColumnState? sortedColumnState = null;
+            int sortedColumns = 0;
+            foreach (var colState in state.ColumnStates)
+            {
+                if (colState.SortDirection is not null) {
+                    sortedColumns++;
+                    sortedColumnState ??= colState;
+                }
+            }
+
+            if (sortedColumns > 1) {
+	            Console.WriteLine(
+		            $"""
+		             {nameof(DynamicFlatTreeDataGridSource<TModel, TModelKey>)}: More than one sorted
+		             column was provided to the `ApplyGridState` method. This isn't an error but
+		             only the first one was applied to the grid.
+		             """);
+            }
+
+            // Trigger column sorting if we found a column to sort by.
+            // We only keep the last sorted column in the list on purpose, as we don't support sorting
+            // by more than one element atm.
+            if (sortedColumnState is not null) {
+                SortBy(Columns[sortedColumnState.Index], (ListSortDirection)sortedColumnState.SortDirection!);
+            }
+
+            // Set sort comparer once columns have been applied
+            return true;
+        }
+        catch (Exception e) {
+            Console.WriteLine("Error applying grid state");
+            Console.WriteLine(e);
+            return false;
+        }
+    }
 
     /// <summary>
     /// </summary>
@@ -77,25 +133,26 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
     /// <returns></returns>
     /// <remarks>Slight changes to <see cref="ITreeDataGridSource.SortBy" /> but DynamicData-aware</remarks>
     public bool SortBy(IColumn? column, ListSortDirection direction) {
-        if (column is IColumn<TModel> typedColumn) {
-            if (!Columns.Contains(typedColumn))
-                return true;
+        if (column is not IDynamicColumn<TModel> typedColumn) return false;
 
-            var comparer = typedColumn.GetComparison(direction);
-
-            if (comparer is not null) {
-                var comparerInstance = new FuncComparer<TModel>(comparer);
-
-                // Trigger a new sort notification.
-                _sortSource.OnNext(comparerInstance);
-                foreach (var c in Columns)
-                    c.SortDirection = c == column ? direction : null;
-            }
-
+        if (!Columns.Contains(typedColumn))
             return true;
+
+        var comparer = typedColumn.GetComparison(direction);
+
+        if (comparer is not null) {
+            var comparerInstance = new FuncComparer<TModel>(comparer);
+
+            // Clear other columns sort and assign sort to selected column
+            foreach (var c in Columns)
+	            c.SortDirection = c == typedColumn ? direction : null;
+
+            // Trigger a new sort notification.
+            _columnsSortSource.OnNext(comparerInstance);
         }
 
-        return false;
+        return true;
+
     }
 
 

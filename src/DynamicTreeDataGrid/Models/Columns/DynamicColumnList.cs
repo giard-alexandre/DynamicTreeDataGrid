@@ -1,10 +1,9 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-using DynamicTreeDataGrid.Models.Columns;
-using DynamicTreeDataGrid.State;
+using DynamicTreeDataGrid.Models.State;
 
-namespace DynamicTreeDataGrid.Columns;
+namespace DynamicTreeDataGrid.Models.Columns;
 
 /// <summary>
 ///     Maintains 2 lists of columns. The main one, which is exposed by default, is the list of all columns
@@ -43,7 +42,7 @@ public class DynamicColumnList<TModel> : DynamicColumnListBase<TModel>, IDynamic
         IList<ColumnState> states = [];
         for (var i = 0; i < Count; i++) {
             var column = this[i];
-            states.Add(new ColumnState(column.Name) { Visible = column.Visible, Index = i });
+            states.Add(new ColumnState(column.Name) { Visible = column.Visible, Index = i, SortDirection = column.SortDirection });
         }
 
         return states;

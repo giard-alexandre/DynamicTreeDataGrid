@@ -1,4 +1,4 @@
-using DynamicTreeDataGrid.State;
+using DynamicTreeDataGrid.Models.State;
 
 namespace DynamicTreeDataGrid.Models.Columns;
 

@@ -7,8 +7,9 @@ using Avalonia.Controls.Models.TreeDataGrid;
 using DynamicData;
 using DynamicData.Aggregation;
 
-using DynamicTreeDataGrid.Columns;
+using DynamicTreeDataGrid.Models;
 using DynamicTreeDataGrid.Models.Columns;
+using DynamicTreeDataGrid.Models.State;
 
 namespace DynamicTreeDataGrid;
 
@@ -45,12 +46,16 @@ public class DynamicHierarchicalTreeDataGridSource<TModel, TModelKey> : Hierarch
         // TODO: Setup Sorted event for treeDataGridSourceImplementation?
     }
 
+    public DynamicTreeDataGridSourceOptions<TModel> Options { get; }
     public new DynamicColumnList<TModel> Columns { get; } = [];
 
     public IObservable<int> FilteredCount { get; }
     public IObservable<int> TotalCount { get; }
     IDynamicColumns IDynamicTreeDataGridSource.Columns => Columns;
     IColumns ITreeDataGridSource.Columns => Columns.DisplayedColumns;
+
+    public GridState GetGridState() => throw new NotImplementedException();
+    public bool ApplyGridState(GridState state) => throw new NotImplementedException();
 
     #region Override base sorted logic with IChangeSet sorting
 

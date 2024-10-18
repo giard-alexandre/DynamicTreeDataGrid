@@ -3,9 +3,7 @@ using System.Linq.Expressions;
 using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
 
-using DynamicTreeDataGrid.Models.Columns;
-
-namespace DynamicTreeDataGrid.Columns;
+namespace DynamicTreeDataGrid.Models.Columns;
 
 /// <summary>
 ///     A column in an <see cref="ITreeDataGridSource" /> which displays a check box.

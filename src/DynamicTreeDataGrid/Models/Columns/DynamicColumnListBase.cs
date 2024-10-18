@@ -17,12 +17,14 @@ namespace DynamicTreeDataGrid.Models.Columns;
 /// </remarks>
 public class DynamicColumnListBase<TModel> : NotifyingListBase<IDynamicColumn<TModel>>, IDynamicColumnsBase {
     private readonly HashSet<string> _nameSet = [];
+    private bool _initialized;
     private double _viewportWidth;
 
     public event EventHandler? LayoutInvalidated;
 
     public Size CellMeasured(int columnIndex, int rowIndex, Size size) {
         var column = (IUpdateColumnLayout)this[columnIndex];
+        _initialized = true;
         return new Size(column.CellMeasured(size.Width, rowIndex), size.Height);
     }
 
@@ -94,7 +96,8 @@ public class DynamicColumnListBase<TModel> : NotifyingListBase<IDynamicColumn<TM
     public void ViewportChanged(Rect viewport) {
         if (_viewportWidth != viewport.Width) {
             _viewportWidth = viewport.Width;
-            UpdateColumnSizes();
+            if (_initialized)
+                UpdateColumnSizes();
         }
     }
 

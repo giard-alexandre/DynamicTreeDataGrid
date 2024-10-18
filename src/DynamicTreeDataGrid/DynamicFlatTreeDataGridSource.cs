@@ -163,7 +163,11 @@ public class DynamicFlatTreeDataGridSource<TModel, TModelKey> : NotifyingBase, I
 
     public IRows Rows => _rows ??= CreateRows();
 
-    public IEnumerable<TModel> Items => _items;
+    public IEnumerable<TModel> Items {
+        get => _items;
+        set => throw new NotImplementedException(
+            "Set is currently not implemented. Change the passed in ChangeSet instead.");
+    }
 
     public ITreeDataGridSelection? Selection {
         get {

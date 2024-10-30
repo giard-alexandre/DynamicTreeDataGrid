@@ -1,5 +1,7 @@
 version: "1.0"
-linter: jetbrains/qodana-cdnet:2024.1
+linter: jetbrains/qodana-cdnet:latest
+dotnet:
+    solution: DynamicTreeDataGrid.sln
 profile:
   name: qodana.recommended
 include:

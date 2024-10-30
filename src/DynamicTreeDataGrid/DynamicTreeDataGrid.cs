@@ -26,6 +26,6 @@ public class DynamicTreeDataGrid : TreeDataGrid {
         if (topLevel is not Window window) return;
 
         columnsWindow.RequestedThemeVariant = topLevel.RequestedThemeVariant;
-        columnsWindow.ShowDialog(window);
+        columnsWindow.Show(window);
     }
 }

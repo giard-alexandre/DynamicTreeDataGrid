@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.9.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.8.0...v0.9.0) (2024-10-30)
+
+
+### 🚀 Features
+
+* **popup:** allow interaction when open ([16c1622](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/16c1622b34cceed80b22e5399231c95a3dcc767b))
+
+
+### 🐛 Bug Fixes
+
+* qodana ([9d7c85a](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/9d7c85a1d0ddd88a4d82be81379ffd106f82817b))
+* qodana config ([63e6a02](https://github.com/giard-alexandre/DynamicTreeDataGrid/commit/63e6a02877680935da1114eaf605d209ea86b29e))
+
 ## [0.8.0](https://github.com/giard-alexandre/DynamicTreeDataGrid/compare/v0.7.0...v0.8.0) (2024-10-18)
 
 

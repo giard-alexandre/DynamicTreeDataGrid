@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -31,17 +32,7 @@ public class MainWindowViewModel : ReactiveObject {
     private bool _preSortDescending = true;
 
     public MainWindowViewModel() {
-        //Set the randomizer seed to generate repeatable data sets.
-        Randomizer.Seed = new Random(8675309);
-        var data = new ObservableCollection<Person>(new Faker<Person>()
-            .RuleFor(person => person.Id, faker => faker.IndexFaker)
-            .RuleFor(person => person.Name, faker => faker.Name.FullName())
-            .RuleFor(person => person.DateOfBirth, faker => faker.Date.Past(80))
-            .RuleFor(person => person.Height, faker => faker.Random.Double())
-            .RuleFor(person => person.Gender, faker => faker.Person.Gender)
-            .RuleFor(person => person.Money, faker => faker.Finance.Amount(-1000M, 1000M, 5))
-            .RuleFor(person => person.IsChecked, faker => faker.Random.Bool())
-            .Generate(3000)).ToObservableChangeSet(person => person.Id);
+        var data = new ObservableCollection<Person>(GenerateFakes(3000)).ToObservableChangeSet(person => person.Id);
 
 
         var searchFilter = this.WhenValueChanged(t => t.FilterText)
@@ -69,24 +60,25 @@ public class MainWindowViewModel : ReactiveObject {
                 }) {
                 Columns = {
                     new DynamicTextColumn<Person, int>("Id", "Id", person => person.Id),
-                    new DynamicTextColumn<Person, string>("Name", "Name", person => person.Name),
+                    new DynamicTextColumn<Person, string>("FirstName", "FirstName", person => person.FirstName),
+                    new DynamicTextColumn<Person, string>("LastName", "LastName", person => person.LastName),
                     new DynamicTextColumn<Person, DateTime>("Date-of-Birth", "DoB", person => person.DateOfBirth),
                     new DynamicTemplateColumn<Person>("Height", "Height", "HeightCell",
                         options: new TemplateColumnOptions<Person> {
-                            CompareAscending = (person, person1) => {
-                                if (person.Height > person1.Height)
+                            CompareAscending = (a, b) => {
+                                if (a.Height > b.Height)
                                     return 1;
 
-                                if (person.Height == person1.Height)
+                                if (a.Height == b.Height)
                                     return 0;
 
                                 return -1;
                             },
-                            CompareDescending = (person, person1) => {
-                                if (person.Height > person1.Height)
+                            CompareDescending = (a, b) => {
+                                if (a.Height > b.Height)
                                     return -1;
 
-                                if (person.Height == person1.Height)
+                                if (a.Height == b.Height)
                                     return 0;
 
                                 return 1;
@@ -133,7 +125,7 @@ public class MainWindowViewModel : ReactiveObject {
 
     public async Task StoreStateAsync(Stream stream) {
         var state = DataSource.GetGridState();
-        await JsonSerializer.SerializeAsync(stream, state);
+        await JsonSerializer.SerializeAsync(stream, state, _jsonOptions);
     }
 
     public async Task LoadStateAsync(Stream stream) {
@@ -148,16 +140,60 @@ public class MainWindowViewModel : ReactiveObject {
         if (string.IsNullOrEmpty(text))
             return _ => true;
 
-        return t => t.Name.Contains(text, StringComparison.OrdinalIgnoreCase);
+        return t => t.FirstName.Contains(text, StringComparison.OrdinalIgnoreCase) ||
+            t.LastName.Contains(text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static List<Person> GenerateFakes(int amount) {
+        //Set the randomizer seed to generate repeatable data sets.
+        Randomizer.Seed = new Random(8675309);
+        var faker = new Faker<Person>().RuleFor(p => p.Id, faker => faker.IndexFaker)
+            .RuleFor(p => p.DateOfBirth, faker => faker.Date.Past(80))
+            .RuleFor(p => p.Height, faker => faker.Random.Double())
+            .RuleFor(p => p.Gender, faker => faker.Person.Gender)
+            .RuleFor(p => p.Money, faker => faker.Finance.Amount(-1000M, 1000M, 5))
+            .RuleFor(p => p.IsChecked, faker => faker.Random.Bool())
+            .RuleFor(p => p.FirstName, f => f.Name.FirstName())
+            .RuleFor(p => p.LastName, f => f.Name.LastName())
+            .RuleFor(p => p.Email, (f, p) => f.Internet.Email(p.FirstName, p.LastName))
+            .RuleFor(p => p.PhoneNumber, f => f.Phone.PhoneNumber())
+            .RuleFor(p => p.Address, f => f.Address.StreetAddress())
+            .RuleFor(p => p.City, f => f.Address.City())
+            .RuleFor(p => p.State, f => f.Address.State())
+            .RuleFor(p => p.PostalCode, f => f.Address.ZipCode())
+            .RuleFor(p => p.Country, f => f.Address.Country())
+            .RuleFor(p => p.IsMarried, f => f.Random.Bool())
+            .RuleFor(p => p.WeddingAnniversary,
+                (f, p) => p.IsMarried ? f.Date.Past(10, p.DateOfBirth.AddYears(18)) : (DateTime?)null)
+            .RuleFor(p => p.Hobbies,
+                f => f.Make(3,
+                    () => f.PickRandom("Fishing", "Cooking", "Gardening", "Reading", "Traveling", "Sports", "Art",
+                        "Music")))
+            .RuleFor(p => p.LanguagesSpoken, f => f.Make(2, () => f.Random.Word()));
+
+
+        return faker.Generate(amount);
     }
 }
 
 public record Person {
     public int Id { get; set; }
-    public string Name { get; set; } = "";
     public DateTime DateOfBirth { get; set; }
     public double Height { get; set; }
     public Name.Gender Gender { get; set; }
     public decimal Money { get; set; }
     public bool IsChecked { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
+    public string PhoneNumber { get; set; }
+    public string Address { get; set; }
+    public string City { get; set; }
+    public string State { get; set; }
+    public string PostalCode { get; set; }
+    public string Country { get; set; }
+    public bool IsMarried { get; set; }
+    public DateTime? WeddingAnniversary { get; set; }
+    public List<string> Hobbies { get; set; } = [];
+    public List<string> LanguagesSpoken { get; set; } = [];
 }

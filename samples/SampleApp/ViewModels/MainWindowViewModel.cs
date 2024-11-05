@@ -89,6 +89,20 @@ public class MainWindowViewModel : ReactiveObject {
                         person => person.Gender), // To Template
                     new DynamicTextColumn<Person, decimal>("Money", "Money", person => person.Money),
                     new DynamicCheckBoxColumn<Person>("Checked", "Checked", person => person.IsChecked),
+                    new DynamicTextColumn<Person, string>("Email", "Email", person => person.Email),
+                    new DynamicTextColumn<Person, string>("PhoneNumber", "PhoneNumber", person => person.PhoneNumber),
+                    new DynamicTextColumn<Person, string>("Address", "Address", person => person.Address),
+                    new DynamicTextColumn<Person, string>("City", "City", person => person.City),
+                    new DynamicTextColumn<Person, string>("State", "State", person => person.State),
+                    new DynamicTextColumn<Person, string>("PostalCode", "PostalCode", person => person.PostalCode),
+                    new DynamicTextColumn<Person, string>("Country", "Country", person => person.Country),
+                    new DynamicCheckBoxColumn<Person>("IsMarried", "IsMarried", person => person.IsMarried),
+                    new DynamicTextColumn<Person, DateTime?>("WeddingAnniversary", "Anniv.", person => person.WeddingAnniversary),
+
+                    // TODO: Custom Tempalte Columns
+                    // Hobbies
+                    // Languages Spoken
+
                 },
             };
     }

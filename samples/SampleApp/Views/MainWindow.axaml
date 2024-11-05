@@ -30,7 +30,7 @@
             </StackPanel>
             <Button Content="Print Column States To Console" Command="{Binding PrintColumnStates}" />
             <StackPanel>
-                <Label Target="SortDirectionToggle">Pre-Sort Descending</Label>
+                <Label Target="SortDirectionToggle">Pre-Sort Checked</Label>
                 <ToggleSwitch Name="SortDirectionToggle" OffContent="Ascending" OnContent="Descending"
                               IsChecked="{Binding PreSortDescending}" />
             </StackPanel>

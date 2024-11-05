@@ -44,6 +44,40 @@
                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
                                Text="{Binding Height, StringFormat={}{0:0.0}}" />
                 </DataTemplate>
+                <DataTemplate x:Key="HobbiesCell" DataType="{x:Type viewModels:Person}">
+                    <ItemsRepeater ItemsSource="{Binding Hobbies}">
+                        <ItemsRepeater.Layout>
+                            <StackLayout Spacing="5"
+                                         Orientation="Horizontal" />
+                        </ItemsRepeater.Layout>
+                        <ItemsRepeater.ItemTemplate>
+                            <DataTemplate>
+                                <Border CornerRadius="5" VerticalAlignment="Center"
+                                        Background="Gray" Padding="2">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                                               Text="{Binding .}" FontSize="8" />
+                                </Border>
+                            </DataTemplate>
+                        </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
+                </DataTemplate>
+                <DataTemplate x:Key="LanguagesCell" DataType="{x:Type viewModels:Person}">
+                    <ItemsRepeater ItemsSource="{Binding LanguagesSpoken}">
+                        <ItemsRepeater.Layout>
+                            <StackLayout Spacing="5"
+                                         Orientation="Horizontal" />
+                        </ItemsRepeater.Layout>
+                        <ItemsRepeater.ItemTemplate>
+                            <DataTemplate>
+                                <Border CornerRadius="5" VerticalAlignment="Center"
+                                        Background="OliveDrab" Padding="2">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                                               Text="{Binding .}" FontSize="8" />
+                                </Border>
+                            </DataTemplate>
+                        </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
+                </DataTemplate>
             </TreeDataGrid.Resources>
         </dynamicTreeDataGrid:DynamicTreeDataGrid>
     </DockPanel>

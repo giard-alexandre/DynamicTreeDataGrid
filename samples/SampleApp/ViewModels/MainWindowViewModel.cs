@@ -98,11 +98,8 @@ public class MainWindowViewModel : ReactiveObject {
                     new DynamicTextColumn<Person, string>("Country", "Country", person => person.Country),
                     new DynamicCheckBoxColumn<Person>("IsMarried", "IsMarried", person => person.IsMarried),
                     new DynamicTextColumn<Person, DateTime?>("WeddingAnniversary", "Anniv.", person => person.WeddingAnniversary),
-
-                    // TODO: Custom Tempalte Columns
-                    // Hobbies
-                    // Languages Spoken
-
+                    new DynamicTemplateColumn<Person>("Hobbies", "Hobbies", "HobbiesCell"),
+                    new DynamicTemplateColumn<Person>("Languages", "Languages", "LanguagesCell"),
                 },
             };
     }

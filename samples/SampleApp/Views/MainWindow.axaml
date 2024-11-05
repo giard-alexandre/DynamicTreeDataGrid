@@ -17,13 +17,13 @@
     </Design.DataContext>
 
     <DockPanel>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <StackPanel.Styles>
+        <WrapPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <WrapPanel.Styles>
                 <Style Selector="StackPanel">
                     <Setter Property="Orientation" Value="Horizontal" />
                     <Setter Property="Margin" Value="5" />
                 </Style>
-            </StackPanel.Styles>
+            </WrapPanel.Styles>
             <StackPanel>
                 <Label Target="FilterTextBox">Filter Name: </Label>
                 <TextBox Name="FilterTextBox" Text="{Binding FilterText}" Width="200" />
@@ -35,8 +35,9 @@
                               IsChecked="{Binding PreSortDescending}" />
             </StackPanel>
             <Button Content="Apply Random Sort State" Command="{Binding ApplyRandomState}" />
-
-        </StackPanel>
+            <Button Content="Save Grid State To File" Click="Click_SaveToFile" />
+            <Button Content="Load Grid State From File" Click="Click_LoadFromFile" />
+        </WrapPanel>
         <dynamicTreeDataGrid:DynamicTreeDataGrid Source="{Binding DataSource}">
             <TreeDataGrid.Resources>
                 <DataTemplate x:Key="HeightCell" DataType="{x:Type viewModels:Person}">

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 using Avalonia.Controls.Models.TreeDataGrid;
 
@@ -15,6 +17,7 @@ using DynamicData.Binding;
 
 using DynamicTreeDataGrid;
 using DynamicTreeDataGrid.Models.Columns;
+using DynamicTreeDataGrid.Models.State;
 
 using ReactiveUI;
 
@@ -38,7 +41,7 @@ public class MainWindowViewModel : ReactiveObject {
             .RuleFor(person => person.Gender, faker => faker.Person.Gender)
             .RuleFor(person => person.Money, faker => faker.Finance.Amount(-1000M, 1000M, 5))
             .RuleFor(person => person.IsChecked, faker => faker.Random.Bool())
-            .Generate(300)).ToObservableChangeSet(person => person.Id);
+            .Generate(3000)).ToObservableChangeSet(person => person.Id);
 
 
         var searchFilter = this.WhenValueChanged(t => t.FilterText)
@@ -126,6 +129,19 @@ public class MainWindowViewModel : ReactiveObject {
             c.SortDirection = null;
         currentState.ColumnStates[randomColumn].SortDirection = ListSortDirection.Ascending;
         DataSource.ApplyGridState(currentState);
+    }
+
+    public async Task StoreStateAsync(Stream stream) {
+        var state = DataSource.GetGridState();
+        await JsonSerializer.SerializeAsync(stream, state);
+    }
+
+    public async Task LoadStateAsync(Stream stream) {
+        var result = await JsonSerializer.DeserializeAsync<GridState>(stream);
+        Console.WriteLine("Result got got bro");
+        if (result is not null) {
+            DataSource.ApplyGridState(result);
+        }
     }
 
     private static Func<Person, bool> BuildSearchFilter(string? text) {

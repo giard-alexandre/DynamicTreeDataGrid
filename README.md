@@ -6,6 +6,8 @@
 Trying to bring some of the features of Enterprise 3rd-party WPF controls to Avalonia's vanilla
 [TreeDataGrid](https://github.com/AvaloniaUI/Avalonia.Controls.TreeDataGrid).
 
+> I've had to archive this project due to lack of time and greater scope than expected, not to mention the uncertainty around [TreeDataGrid](https://github.com/AvaloniaUI/Avalonia.Controls.TreeDataGrid/issues/307)
+
 
 
 > [!WARNING]
